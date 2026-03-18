@@ -121,8 +121,8 @@
     <div class="name-card">
       <h2>Welcome</h2>
       <p>Enter your name and your partner's name to personalise your sessions.</p>
-      <div class="field"><label>Your name</label><input type="text" id="myname" placeholder="e.g. Owen" maxlength="20" /></div>
-      <div class="field"><label>Her name</label><input type="text" id="hername" placeholder="e.g. Nima" maxlength="20" /></div>
+      <div class="field"><label>Your name</label><input type="text" id="myname" placeholder="Your name" maxlength="20" /></div>
+      <div class="field"><label>Her name</label><input type="text" id="hername" placeholder="Her name" maxlength="20" /></div>
     </div>
     <button class="btn" onclick="saveNames()">Get Started</button>
   </div>
@@ -220,16 +220,16 @@ var DIFF = {
   2: { label: "Guarded", inst: "She is emotionally closed at first. She needs genuine curiosity and validation before she opens up. Defensive responses make her withdraw." },
   3: { label: "Defended", inst: "She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly." }
 };
-var myName='You', herName='Nima', sel=null, diff=1, mode='practice', count=0, scores=[], myReplies=[], herReplies=[], busy=false;
+var myName='You', herName='Her', sel=null, diff=1, mode='practice', count=0, scores=[], myReplies=[], herReplies=[], busy=false;
 
 function loadNames() {
   var s=localStorage.getItem('et_names');
-  if(s){ var n=JSON.parse(s); myName=n.me||'You'; herName=n.her||'Nima'; return true; }
+  if(s){ var n=JSON.parse(s); myName=n.me||'You'; herName=n.her||'Her'; return true; }
   return false;
 }
 function saveNames() {
   var me=document.getElementById('myname').value.trim()||'You';
-  var her=document.getElementById('hername').value.trim()||'Nima';
+  var her=document.getElementById('hername').value.trim()||'Her';
   myName=me; herName=her;
   localStorage.setItem('et_names',JSON.stringify({me:me,her:her}));
   showDashboard();
@@ -399,9 +399,9 @@ function doDebrief(){
     document.getElementById('fscore-lbl').textContent='/ 100';
     title=avg>=80?'Excellent session':avg>=60?'Good session':'Keep practising';
     sub=dLabel+' difficulty - Practice mode';
-    if(avg>=70){pat=myName+' showed genuine empathy, staying in '+herName+'s world. That is the core skill.';carry='Keep practising the pause before responding. That moment is where empathy lives.';}
-    else if(avg>=40){pat='Not getting defensive - real progress. Next layer is naming what '+herName+' is feeling.';carry='After your apology, add one sentence naming her emotion. I can see that really hurt you.';}
-    else{pat='The instinct under pressure is to defend. Awareness is the first step.';carry='Pause, breathe, and ask - what is '+herName+' feeling right now?';}
+    if(avg>=70){pat='You showed genuine empathy, staying in '+herName+'s world rather than defending. That is the core skill.';carry='Keep practising the pause before responding. That moment is where empathy lives.';}
+    else if(avg>=40){pat='Not getting defensive - real progress. Next layer is naming what '+herName+' is feeling.';carry='After your apology, name her emotion. I can see that really hurt you.';}
+    else{pat='The instinct under pressure is to defend. Awareness is the first step.';carry='Pause, breathe, and ask what is '+herName+' feeling right now.';}
   }
   document.getElementById('d-title').textContent=title;
   document.getElementById('d-sub').textContent=sub;
