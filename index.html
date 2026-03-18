@@ -7,534 +7,171 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F7F4EF;
-    --surface: #FFFFFF;
-    --surface2: #F0EDE8;
-    --border: rgba(0,0,0,0.08);
-    --border2: rgba(0,0,0,0.15);
-    --text: #1A1714;
-    --text2: #6B6560;
-    --text3: #9E9894;
-    --accent: #4A3F8F;
-    --accent-light: #EEEDFE;
-    --accent-mid: #7B72C4;
-    --her-bg: #F0EDE8;
-    --you-bg: #EEEDFE;
-    --you-text: #26215C;
-    --good: #EAF3DE;
-    --good-border: #3B6D11;
-    --good-text: #27500A;
-    --neutral: #FAEEDA;
-    --neutral-border: #854F0B;
-    --neutral-text: #633806;
-    --miss: #FAECE7;
-    --miss-border: #993C1D;
-    --miss-text: #712B13;
-    --radius: 16px;
-    --radius-sm: 10px;
+    --bg: #F7F4EF; --surface: #FFFFFF; --surface2: #F0EDE8;
+    --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.15);
+    --text: #1A1714; --text2: #6B6560; --text3: #9E9894;
+    --accent: #4A3F8F; --accent-light: #EEEDFE; --accent-mid: #7B72C4;
+    --her-bg: #F0EDE8; --you-bg: #EEEDFE; --you-text: #26215C;
+    --good: #EAF3DE; --good-border: #3B6D11; --good-text: #27500A;
+    --neutral: #FAEEDA; --neutral-border: #854F0B; --neutral-text: #633806;
+    --miss: #FAECE7; --miss-border: #993C1D; --miss-text: #712B13;
+    --radius: 16px; --radius-sm: 10px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  .app {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 2rem 1rem 4rem;
-  }
-
-  .logo {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-
-  .logo h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 32px;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-
-  .logo p {
-    font-size: 14px;
-    color: var(--text3);
-    margin-top: 4px;
-    font-weight: 300;
-  }
-
-  .phase { display: none; }
-  .phase.active { display: block; }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    margin-top: 1.5rem;
-  }
-
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+  .app { max-width: 680px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+  .logo { text-align: center; margin-bottom: 2rem; }
+  .logo h1 { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); letter-spacing: -0.5px; }
+  .logo p { font-size: 14px; color: var(--text3); margin-top: 4px; font-weight: 300; }
+  .phase { display: none; } .phase.active { display: block; }
+  .section-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; margin-top: 1.5rem; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 4px; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: left;
-  }
-
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; cursor: pointer; transition: all 0.15s; text-align: left; }
   .card:hover { border-color: var(--border2); background: var(--surface2); }
   .card.sel { border-color: var(--accent); background: var(--accent-light); }
-
   .card .ct { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
   .card .cd { font-size: 12px; color: var(--text2); line-height: 1.4; }
-
-  .diff-card.d1 .ct { color: #3B6D11; }
-  .diff-card.d2 .ct { color: #854F0B; }
-  .diff-card.d3 .ct { color: #993C1D; }
+  .diff-card.d1 .ct { color: #3B6D11; } .diff-card.d2 .ct { color: #854F0B; } .diff-card.d3 .ct { color: #993C1D; }
   .diff-card.d1.sel { border-color: #3B6D11; background: #EAF3DE; }
   .diff-card.d2.sel { border-color: #854F0B; background: #FAEEDA; }
   .diff-card.d3.sel { border-color: #993C1D; background: #FAECE7; }
-
-  .begin-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    margin-top: 1.5rem;
-    transition: opacity 0.15s;
-    letter-spacing: 0.2px;
-  }
-
-  .begin-btn:hover { opacity: 0.92; }
-  .begin-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-  .scene-banner {
-    background: var(--surface);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    padding: 14px 18px;
-    margin-bottom: 1rem;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .scene-banner strong {
-    display: block;
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
-  }
-
-  .badges {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .badge {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 4px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
-  }
-
+  .btn { width: 100%; padding: 13px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 1.25rem; transition: opacity 0.15s; }
+  .btn:hover { opacity: 0.9; } .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .name-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 1rem; }
+  .name-card h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 6px; }
+  .name-card p { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+  .field { margin-bottom: 1rem; }
+  .field label { font-size: 11px; font-weight: 500; color: var(--text3); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .field input { width: 100%; padding: 11px 14px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 15px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--bg); transition: border-color 0.15s; }
+  .field input:focus { outline: none; border-color: var(--accent-mid); }
+  .scene-banner { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 18px; margin-bottom: 1rem; font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .scene-banner strong { display: block; font-size: 10px; font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+  .badges { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .badge { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.3px; }
   .badge.mode-p { background: var(--accent-light); color: var(--accent); }
   .badge.mode-i { background: #E1F5EE; color: #085041; }
   .badge.d1 { background: #EAF3DE; color: #3B6D11; }
   .badge.d2 { background: #FAEEDA; color: #854F0B; }
   .badge.d3 { background: #FAECE7; color: #993C1D; }
-
-  .chat-window {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    min-height: 120px;
-  }
-
-  .msg {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
-    animation: msgIn 0.3s ease;
-  }
-
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  .msg.her { align-items: flex-start; }
-  .msg.you { align-items: flex-start; flex-direction: row-reverse; }
-
-  .avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 500;
-    flex-shrink: 0;
-    font-family: 'DM Serif Display', serif;
-  }
-
-  .avatar.h { background: #F4C0D1; color: #72243E; }
-  .avatar.y { background: var(--accent-light); color: var(--accent); }
-
-  .bubble {
-    max-width: 76%;
-    padding: 11px 15px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.65;
-  }
-
-  .msg.her .bubble {
-    background: var(--her-bg);
-    color: var(--text);
-    border-bottom-left-radius: 4px;
-  }
-
-  .msg.you .bubble {
-    background: var(--you-bg);
-    color: var(--you-text);
-    border-bottom-right-radius: 4px;
-  }
-
+  .chat-window { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; min-height: 120px; }
+  .msg { display: flex; gap: 10px; margin-bottom: 14px; animation: msgIn 0.3s ease; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .msg.her { align-items: flex-start; } .msg.you { align-items: flex-start; flex-direction: row-reverse; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; font-family: 'DM Serif Display', serif; }
+  .avatar.h { background: #F4C0D1; color: #72243E; } .avatar.y { background: var(--accent-light); color: var(--accent); }
+  .bubble { max-width: 76%; padding: 11px 15px; border-radius: 18px; font-size: 14px; line-height: 1.65; }
+  .msg.her .bubble { background: var(--her-bg); color: var(--text); border-bottom-left-radius: 4px; }
+  .msg.you .bubble { background: var(--you-bg); color: var(--you-text); border-bottom-right-radius: 4px; }
   .typing-wrap { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; }
-
-  .typing-bubble {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 11px 16px;
-    background: var(--her-bg);
-    border-radius: 18px;
-    border-bottom-left-radius: 4px;
-  }
-
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--text3);
-    animation: bounce 1.2s infinite;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
+  .typing-bubble { display: flex; align-items: center; gap: 5px; padding: 11px 16px; background: var(--her-bg); border-radius: 18px; border-bottom-left-radius: 4px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; } .dot:nth-child(3) { animation-delay: 0.4s; }
   @keyframes bounce { 0%,60%,100% { transform: none; } 30% { transform: translateY(-5px); } }
-
-  .breath-prompt {
-    background: var(--accent-light);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-    margin-bottom: 1rem;
-    font-size: 13px;
-    color: var(--accent);
-    line-height: 1.7;
-    text-align: center;
-    animation: msgIn 0.4s ease;
-  }
-
-  .breath-prompt strong {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 3px;
-    font-family: 'DM Serif Display', serif;
-    font-size: 15px;
-  }
-
-  .input-area {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .input-area label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text3);
-    display: block;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .input-area textarea {
-    width: 100%;
-    min-height: 80px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 11px 14px;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    background: var(--bg);
-    resize: none;
-    line-height: 1.6;
-    transition: border-color 0.15s;
-  }
-
+  .breath-prompt { background: var(--accent-light); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 1rem; font-size: 13px; color: var(--accent); line-height: 1.7; text-align: center; }
+  .breath-prompt strong { display: block; font-weight: 500; margin-bottom: 3px; font-family: 'DM Serif Display', serif; font-size: 15px; }
+  .input-area { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; }
+  .input-area label { font-size: 11px; font-weight: 500; color: var(--text3); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .input-area textarea { width: 100%; min-height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--bg); resize: none; line-height: 1.6; transition: border-color 0.15s; }
   .input-area textarea:focus { outline: none; border-color: var(--accent-mid); }
-
-  .send-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: opacity 0.15s;
-  }
-
-  .send-btn:hover { opacity: 0.9; }
-  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .feedback {
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-    margin-bottom: 1rem;
-    font-size: 13px;
-    line-height: 1.7;
-    animation: msgIn 0.4s ease;
-  }
-
-  .feedback strong {
-    display: block;
-    font-size: 10px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
+  .send-btn { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 10px; transition: opacity 0.15s; }
+  .send-btn:hover { opacity: 0.9; } .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .feedback { border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 1rem; font-size: 13px; line-height: 1.7; animation: msgIn 0.4s ease; }
+  .feedback strong { display: block; font-size: 10px; font-weight: 500; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
   .feedback.good { background: var(--good); border-left: 3px solid var(--good-border); color: var(--good-text); }
   .feedback.neutral { background: var(--neutral); border-left: 3px solid var(--neutral-border); color: var(--neutral-text); }
   .feedback.miss { background: var(--miss); border-left: 3px solid var(--miss-border); color: var(--miss-text); }
-
   .action-row { display: flex; gap: 8px; margin-top: 1rem; }
-
-  .action-row button {
-    flex: 1;
-    padding: 11px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    border: 1px solid var(--border2);
-    background: var(--surface);
-    color: var(--text);
-    transition: background 0.15s;
-  }
-
+  .action-row button { flex: 1; padding: 11px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--text); transition: background 0.15s; }
   .action-row button:hover { background: var(--surface2); }
-
-  .action-row button.pri {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
-
+  .action-row button.pri { background: var(--accent); color: white; border-color: var(--accent); }
   .action-row button.pri:hover { opacity: 0.9; background: var(--accent); }
-
-  .debrief-score {
-    text-align: center;
-    padding: 2.5rem 1rem 1.5rem;
-  }
-
-  .score-ring {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: var(--accent-light);
-    border: 3px solid var(--accent);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-  }
-
-  .score-ring .num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 42px;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .score-ring .lbl {
-    font-size: 10px;
-    color: var(--accent-mid);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 2px;
-  }
-
-  .debrief-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 20px;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-
-  .debrief-sub {
-    font-size: 13px;
-    color: var(--text3);
-    margin-bottom: 1.5rem;
-  }
-
-  .insight {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 16px 18px;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text);
-    margin-bottom: 10px;
-    text-align: left;
-  }
-
-  .insight strong {
-    display: block;
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--text3);
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .error-msg {
-    background: var(--miss);
-    border-left: 3px solid var(--miss-border);
-    color: var(--miss-text);
-    padding: 12px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    margin-bottom: 1rem;
-  }
-
-  @media (max-width: 500px) {
-    .grid2 { grid-template-columns: 1fr; }
-    .grid3 { grid-template-columns: 1fr 1fr; }
-  }
+  .debrief-score { text-align: center; padding: 2rem 1rem 1.5rem; }
+  .score-ring { width: 120px; height: 120px; border-radius: 50%; background: var(--accent-light); border: 3px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+  .score-ring .num { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--accent); line-height: 1; }
+  .score-ring .lbl { font-size: 10px; color: var(--accent-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .debrief-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 0.25rem; }
+  .debrief-sub { font-size: 13px; color: var(--text3); margin-bottom: 1.5rem; }
+  .insight { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; font-size: 13px; line-height: 1.7; color: var(--text); margin-bottom: 10px; text-align: left; }
+  .insight strong { display: block; font-size: 10px; font-weight: 500; color: var(--text3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+  .error-msg { background: var(--miss); border-left: 3px solid var(--miss-border); color: var(--miss-text); padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 1rem; }
+  .progress-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+  .stat-card .snum { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .stat-card .slbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .history-list { margin-bottom: 1.5rem; }
+  .history-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+  .history-item .hi-left { color: var(--text2); }
+  .history-item .hi-left strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
+  .history-item .hi-score { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent); }
+  .history-item .hi-score.no-score { font-size: 14px; color: var(--text3); }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .top-bar-link { font-size: 13px; color: var(--accent); cursor: pointer; }
+  @media (max-width: 500px) { .grid2 { grid-template-columns: 1fr; } .grid3 { grid-template-columns: 1fr 1fr; } .progress-grid { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
 <div class="app">
-
   <div class="logo">
     <h1>Empathy Trainer</h1>
     <p>Practice real conversations. Build real connection.</p>
   </div>
 
-  <!-- SELECTION SCREEN -->
-  <div id="ph-select" class="phase active">
-    <div class="section-label">Choose a scenario</div>
-    <div class="grid2">
-      <div class="card" data-id="neglected" onclick="pickS(this)">
-        <div class="ct">Feeling neglected</div>
-        <div class="cd">She says you never make time for her</div>
-      </div>
-      <div class="card" data-id="hurt" onclick="pickS(this)">
-        <div class="ct">Something you said</div>
-        <div class="cd">She felt hurt or embarrassed by your words</div>
-      </div>
-      <div class="card" data-id="overwhelmed" onclick="pickS(this)">
-        <div class="ct">Overwhelmed and closed</div>
-        <div class="cd">She's distant, says "I'm fine"</div>
-      </div>
-      <div class="card" data-id="criticism" onclick="pickS(this)">
-        <div class="ct">Direct criticism</div>
-        <div class="cd">She says you always do this</div>
-      </div>
-      <div class="card" data-id="takenforgranted" onclick="pickS(this)">
-        <div class="ct">Taken for granted</div>
-        <div class="cd">She feels invisible and unappreciated</div>
-      </div>
-      <div class="card" data-id="jealousy" onclick="pickS(this)">
-        <div class="ct">Jealousy</div>
-        <div class="cd">She's jealous but won't say why</div>
-      </div>
-      <div class="card" data-id="confidence" onclick="pickS(this)">
-        <div class="ct">Crisis of confidence</div>
-        <div class="cd">She's doubting herself deeply</div>
-      </div>
-      <div class="card" data-id="pullingaway" onclick="pickS(this)">
-        <div class="ct">Pulling away</div>
-        <div class="cd">She's distant and you don't know why</div>
-      </div>
+  <div id="ph-setup" class="phase active">
+    <div class="name-card">
+      <h2>Welcome</h2>
+      <p>Enter your name and your partner's name to personalise your sessions.</p>
+      <div class="field"><label>Your name</label><input type="text" id="myname" placeholder="e.g. Owen" maxlength="20" /></div>
+      <div class="field"><label>Her name</label><input type="text" id="hername" placeholder="e.g. Nima" maxlength="20" /></div>
     </div>
-
-    <div class="section-label">Difficulty</div>
-    <div class="grid3">
-      <div class="card diff-card d1 sel" data-diff="1" onclick="pickD(this)">
-        <div class="ct">Gentle</div>
-        <div class="cd">Open and forgiving of imperfect responses</div>
-      </div>
-      <div class="card diff-card d2" data-diff="2" onclick="pickD(this)">
-        <div class="ct">Guarded</div>
-        <div class="cd">Closed at first, needs real curiosity</div>
-      </div>
-      <div class="card diff-card d3" data-diff="3" onclick="pickD(this)">
-        <div class="ct">Defended</div>
-        <div class="cd">Hurt and pushing back, high stakes</div>
-      </div>
-    </div>
-
-    <div class="section-label">Mode</div>
-    <div class="grid2">
-      <div class="card sel" data-mode="practice" onclick="pickM(this)">
-        <div class="ct">Practice mode</div>
-        <div class="cd">Coaching and scores after every exchange</div>
-      </div>
-      <div class="card" data-mode="immersion" onclick="pickM(this)">
-        <div class="ct">Immersion mode</div>
-        <div class="cd">No coaching — just you and Nima</div>
-      </div>
-    </div>
-
-    <button class="begin-btn" id="beginbtn" onclick="begin()" disabled>Choose a scenario to begin</button>
+    <button class="btn" onclick="saveNames()">Get Started</button>
   </div>
 
-  <!-- CHAT SCREEN -->
+  <div id="ph-dashboard" class="phase">
+    <div class="top-bar">
+      <div style="font-size:13px;color:var(--text2)">Welcome back, <strong id="dash-name" style="color:var(--text)"></strong></div>
+      <span class="top-bar-link" onclick="showSetup()">Change names</span>
+    </div>
+    <div class="progress-grid">
+      <div class="stat-card"><div class="snum" id="stat-sessions">0</div><div class="slbl">Sessions</div></div>
+      <div class="stat-card"><div class="snum" id="stat-avg">-</div><div class="slbl">Avg score</div></div>
+      <div class="stat-card"><div class="snum" id="stat-best">-</div><div class="slbl">Best score</div></div>
+    </div>
+    <div class="section-label">Recent sessions</div>
+    <div class="history-list" id="history-list"></div>
+    <button class="btn" onclick="showSelect()">Start new session</button>
+  </div>
+
+  <div id="ph-select" class="phase">
+    <div class="top-bar">
+      <div style="font-size:13px;color:var(--text2)">New session</div>
+      <span class="top-bar-link" onclick="showDashboard()">Back</span>
+    </div>
+    <div class="section-label">Choose a scenario</div>
+    <div class="grid2">
+      <div class="card" data-id="neglected" onclick="pickS(this)"><div class="ct">Feeling neglected</div><div class="cd">She says you never make time for her</div></div>
+      <div class="card" data-id="hurt" onclick="pickS(this)"><div class="ct">Something you said</div><div class="cd">She felt hurt or embarrassed by your words</div></div>
+      <div class="card" data-id="overwhelmed" onclick="pickS(this)"><div class="ct">Overwhelmed and closed</div><div class="cd">She's distant, says "I'm fine"</div></div>
+      <div class="card" data-id="criticism" onclick="pickS(this)"><div class="ct">Direct criticism</div><div class="cd">She says you always do this</div></div>
+      <div class="card" data-id="takenforgranted" onclick="pickS(this)"><div class="ct">Taken for granted</div><div class="cd">She feels invisible and unappreciated</div></div>
+      <div class="card" data-id="jealousy" onclick="pickS(this)"><div class="ct">Jealousy</div><div class="cd">She's jealous but won't say why</div></div>
+      <div class="card" data-id="confidence" onclick="pickS(this)"><div class="ct">Crisis of confidence</div><div class="cd">She's doubting herself deeply</div></div>
+      <div class="card" data-id="pullingaway" onclick="pickS(this)"><div class="ct">Pulling away</div><div class="cd">She's distant and you don't know why</div></div>
+    </div>
+    <div class="section-label">Difficulty</div>
+    <div class="grid3">
+      <div class="card diff-card d1 sel" data-diff="1" onclick="pickD(this)"><div class="ct">Gentle</div><div class="cd">Open and forgiving</div></div>
+      <div class="card diff-card d2" data-diff="2" onclick="pickD(this)"><div class="ct">Guarded</div><div class="cd">Closed at first</div></div>
+      <div class="card diff-card d3" data-diff="3" onclick="pickD(this)"><div class="ct">Defended</div><div class="cd">Hurt and pushing back</div></div>
+    </div>
+    <div class="section-label">Mode</div>
+    <div class="grid2">
+      <div class="card sel" data-mode="practice" onclick="pickM(this)"><div class="ct">Practice mode</div><div class="cd">Coaching and scores after every exchange</div></div>
+      <div class="card" data-mode="immersion" onclick="pickM(this)"><div class="ct">Immersion mode</div><div class="cd">No coaching, just you and her</div></div>
+    </div>
+    <button class="btn" id="beginbtn" onclick="begin()" disabled>Choose a scenario to begin</button>
+  </div>
+
   <div id="ph-chat" class="phase">
     <div class="scene-banner"><strong>The scene</strong><span id="scene-txt"></span></div>
     <div class="badges" id="badges"></div>
@@ -544,7 +181,7 @@
       Breathe in for 4... hold for 2... out for 6.<br>What is she feeling right now?
     </div>
     <div class="input-area" id="input-block">
-      <label>Your response</label>
+      <label id="input-label">Your response</label>
       <textarea id="txt" placeholder="Type what you would say to her..." rows="3"></textarea>
       <button class="send-btn" id="sendbtn" onclick="doSend()">Send</button>
     </div>
@@ -552,69 +189,107 @@
     <div id="act-div"></div>
   </div>
 
-  <!-- DEBRIEF SCREEN -->
   <div id="ph-debrief" class="phase">
     <div class="debrief-score">
-      <div class="score-ring">
-        <div class="num" id="fscore">—</div>
-        <div class="lbl" id="fscore-lbl">score</div>
-      </div>
+      <div class="score-ring"><div class="num" id="fscore">-</div><div class="lbl" id="fscore-lbl">score</div></div>
       <div class="debrief-title" id="d-title">Session complete</div>
       <div class="debrief-sub" id="d-sub"></div>
     </div>
     <div class="insight"><strong>Your pattern today</strong><span id="d-pat"></span></div>
     <div class="insight"><strong>One thing to carry with you</strong><span id="d-carry"></span></div>
     <div class="action-row">
-      <button onclick="doRestart()">Try another</button>
-      <button class="pri" onclick="doRestart()">New session</button>
+      <button onclick="showDashboard()">Dashboard</button>
+      <button class="pri" onclick="showSelect()">New session</button>
     </div>
   </div>
-
 </div>
 
 <script>
 var SC = {
   neglected: { scene: "You've had a busy week. She's been quiet. You're sitting together at home when she turns to you.", opening: "You never really make time for me. I always feel like I'm last on your list." },
-  hurt: { scene: "You made a joke earlier in front of friends. She went quiet after. You're now alone together.", opening: "That thing you said earlier... it made me feel really stupid in front of everyone." },
+  hurt: { scene: "You made a joke earlier in front of friends. She went quiet after. You're now alone together.", opening: "That thing you said earlier made me feel really stupid in front of everyone." },
   overwhelmed: { scene: "She's been quiet all evening. You can feel something is off. You ask if she's okay.", opening: "I'm fine. Just tired." },
   criticism: { scene: "You forgot something important to her again. She's frustrated and finally says something.", opening: "You always do this. You just don't think about how things affect me." },
-  takenforgranted: { scene: "She's been doing everything lately — at home, at work, for everyone around her. Tonight something breaks.", opening: "I just feel like everything I do goes completely unnoticed. Like I'm invisible." },
-  jealousy: { scene: "You came home from an evening out with friends. She's been quiet since you got back. Something feels off.", opening: "I'm fine. You had a good time?" },
-  confidence: { scene: "She came home quiet after a difficult day. Something happened that shook her. She sits down and finally says it.", opening: "I just feel like I'm not good enough. Like no matter what I do it's never quite right." },
-  pullingaway: { scene: "She's been different lately — quieter, more distant. You've noticed but haven't said anything. Tonight you finally ask.", opening: "I don't know. I've just been in my own head a lot lately." }
+  takenforgranted: { scene: "She's been doing everything lately. Tonight something breaks.", opening: "I just feel like everything I do goes completely unnoticed. Like I'm invisible." },
+  jealousy: { scene: "You came home from an evening out with friends. She's been quiet since. Something feels off.", opening: "I'm fine. You had a good time?" },
+  confidence: { scene: "She came home quiet after a difficult day. She sits down and finally says it.", opening: "I just feel like I'm not good enough. Like no matter what I do it's never quite right." },
+  pullingaway: { scene: "She's been different lately, quieter, more distant. Tonight you finally ask.", opening: "I don't know. I've just been in my own head a lot lately." }
 };
-
 var DIFF = {
   1: { label: "Gentle", inst: "She is sad but open and forgiving. She responds warmly to even imperfect empathy. She opens up relatively easily." },
   2: { label: "Guarded", inst: "She is emotionally closed at first. She needs genuine curiosity and validation before she opens up. Defensive responses make her withdraw." },
   3: { label: "Defended", inst: "She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly." }
 };
+var myName='You', herName='Nima', sel=null, diff=1, mode='practice', count=0, scores=[], myReplies=[], herReplies=[], busy=false;
 
-var sel=null, diff=1, mode='practice', count=0, scores=[], myReplies=[], herReplies=[], busy=false;
-
-function pickS(el) {
-  document.querySelectorAll('.card[data-id]').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel'); sel=el.dataset.id;
-  document.getElementById('beginbtn').disabled=false;
-  document.getElementById('beginbtn').textContent='Begin — '+el.querySelector('.ct').textContent;
+function loadNames() {
+  var s=localStorage.getItem('et_names');
+  if(s){ var n=JSON.parse(s); myName=n.me||'You'; herName=n.her||'Nima'; return true; }
+  return false;
 }
-
-function pickD(el) {
-  document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel'); diff=parseInt(el.dataset.diff);
+function saveNames() {
+  var me=document.getElementById('myname').value.trim()||'You';
+  var her=document.getElementById('hername').value.trim()||'Nima';
+  myName=me; herName=her;
+  localStorage.setItem('et_names',JSON.stringify({me:me,her:her}));
+  showDashboard();
 }
-
-function pickM(el) {
-  document.querySelectorAll('.card[data-mode]').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel'); mode=el.dataset.mode;
+function showSetup() {
+  var s=localStorage.getItem('et_names');
+  if(s){ var n=JSON.parse(s); document.getElementById('myname').value=n.me||''; document.getElementById('hername').value=n.her||''; }
+  showPhase('ph-setup');
 }
-
+function showDashboard() {
+  document.getElementById('dash-name').textContent=myName;
+  loadHistory();
+  showPhase('ph-dashboard');
+}
+function showSelect() {
+  document.getElementById('input-label').textContent='Your response to '+herName;
+  showPhase('ph-select');
+}
+function loadHistory() {
+  var history=JSON.parse(localStorage.getItem('et_history')||'[]');
+  var scored=history.filter(function(h){return h.score!==null;});
+  var avg=scored.length?Math.round(scored.reduce(function(a,b){return a+b.score;},0)/scored.length):null;
+  var best=scored.length?Math.max.apply(null,scored.map(function(h){return h.score;})):null;
+  document.getElementById('stat-sessions').textContent=history.length;
+  document.getElementById('stat-avg').textContent=avg!==null?avg:'-';
+  document.getElementById('stat-best').textContent=best!==null?best:'-';
+  var list=document.getElementById('history-list');
+  if(history.length===0){ list.innerHTML='<div style="font-size:13px;color:var(--text3);padding:1rem 0">No sessions yet. Start your first one below.</div>'; return; }
+  var recent=history.slice(-6).reverse();
+  list.innerHTML=recent.map(function(h){
+    var scoreHtml=h.score!==null?'<div class="hi-score">'+h.score+'</div>':'<div class="hi-score no-score">Immersion</div>';
+    var dl=h.diff===1?'Gentle':h.diff===2?'Guarded':'Defended';
+    return '<div class="history-item"><div class="hi-left"><strong>'+h.scenario+'</strong>'+dl+' - '+h.date+'</div>'+scoreHtml+'</div>';
+  }).join('');
+}
+function saveSession(sName,score) {
+  var history=JSON.parse(localStorage.getItem('et_history')||'[]');
+  var now=new Date(); var date=now.toLocaleDateString('en-IE',{day:'numeric',month:'short'});
+  history.push({scenario:sName,diff:diff,score:score,date:date,mode:mode});
+  localStorage.setItem('et_history',JSON.stringify(history));
+}
 function showPhase(id) {
   document.querySelectorAll('.phase').forEach(function(p){p.classList.remove('active');});
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
-
+function pickS(el) {
+  document.querySelectorAll('.card[data-id]').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel'); sel=el.dataset.id;
+  document.getElementById('beginbtn').disabled=false;
+  document.getElementById('beginbtn').textContent='Begin - '+el.querySelector('.ct').textContent;
+}
+function pickD(el) {
+  document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel'); diff=parseInt(el.dataset.diff);
+}
+function pickM(el) {
+  document.querySelectorAll('.card[data-mode]').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel'); mode=el.dataset.mode;
+}
 function begin() {
   if(!sel) return;
   var s=SC[sel];
@@ -626,173 +301,115 @@ function begin() {
   document.getElementById('input-block').style.display='block';
   document.getElementById('sendbtn').disabled=false;
   count=0; scores=[]; myReplies=[]; herReplies=[];
-
   var bw=document.getElementById('badges');
   var ml=mode==='practice'?'<div class="badge mode-p">Practice</div>':'<div class="badge mode-i">Immersion</div>';
   var dl=diff===1?'<div class="badge d1">Gentle</div>':diff===2?'<div class="badge d2">Guarded</div>':'<div class="badge d3">Defended</div>';
   bw.innerHTML=ml+dl;
-
   showPhase('ph-chat');
   setTimeout(function(){addMsg('her',s.opening);},600);
   herReplies.push(s.opening);
 }
-
-function addMsg(who, text) {
-  var w=document.getElementById('chatwin');
-  var d=document.createElement('div');
-  d.className='msg '+who;
-  d.innerHTML='<div class="avatar '+(who==='her'?'h':'y')+'">'+(who==='her'?'N':'O')+'</div><div class="bubble">'+text+'</div>';
+function addMsg(who,text) {
+  var w=document.getElementById('chatwin'); var d=document.createElement('div'); d.className='msg '+who;
+  var init=who==='her'?herName.charAt(0).toUpperCase():myName.charAt(0).toUpperCase();
+  d.innerHTML='<div class="avatar '+(who==='her'?'h':'y')+'">'+init+'</div><div class="bubble">'+text+'</div>';
   w.appendChild(d); w.scrollTop=w.scrollHeight;
 }
-
 function showTyping() {
-  var w=document.getElementById('chatwin');
-  var d=document.createElement('div');
+  var w=document.getElementById('chatwin'); var d=document.createElement('div');
   d.className='typing-wrap'; d.id='typer';
-  d.innerHTML='<div class="avatar h">N</div><div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  d.innerHTML='<div class="avatar h">'+herName.charAt(0).toUpperCase()+'</div><div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   w.appendChild(d); w.scrollTop=w.scrollHeight;
 }
-
-function rmTyping() { var e=document.getElementById('typer'); if(e) e.remove(); }
-
+function rmTyping(){var e=document.getElementById('typer');if(e)e.remove();}
 async function doSend() {
   if(busy) return;
-  var ta=document.getElementById('txt');
-  var txt=ta.value.trim();
-  if(!txt) return;
-  busy=true;
-  document.getElementById('sendbtn').disabled=true;
+  var ta=document.getElementById('txt'); var txt=ta.value.trim(); if(!txt) return;
+  busy=true; document.getElementById('sendbtn').disabled=true;
   document.getElementById('breath-div').style.display='none';
-  document.getElementById('fb-div').innerHTML='';
-  document.getElementById('act-div').innerHTML='';
-  addMsg('you',txt);
-  myReplies.push(txt);
-  ta.value=''; count++;
-  showTyping();
-
-  var s=SC[sel]; var d=DIFF[diff];
-  var history='';
+  document.getElementById('fb-div').innerHTML=''; document.getElementById('act-div').innerHTML='';
+  addMsg('you',txt); myReplies.push(txt); ta.value=''; count++; showTyping();
+  var s=SC[sel]; var d=DIFF[diff]; var history='';
   for(var i=0;i<herReplies.length;i++){
-    history+='Nima: "'+herReplies[i]+'"\n';
-    if(myReplies[i]) history+='Owen: "'+myReplies[i]+'"\n';
+    history+=herName+': "'+herReplies[i]+'"\n';
+    if(myReplies[i]) history+=myName+': "'+myReplies[i]+'"\n';
   }
-
   var sysPrompt;
   if(mode==='practice'){
-    sysPrompt='You are running an empathy training simulation. TWO roles:\n\nROLE 1 — Nima, a woman in an emotionally charged moment.\nScene: '+s.scene+'\nDifficulty: '+d.label+'. '+d.inst+'\nRespond as Nima — authentically, briefly (1-3 sentences), emotionally real. Follow the difficulty strictly.\n\nROLE 2 — Empathy coach.\nAfter Nima\'s response give brief honest feedback.\n\nReply ONLY as valid JSON, no markdown:\n{"nima":"response","quality":"good|neutral|miss","score":0-100,"feedback":"1-2 sentences","breath":true|false}\n\nQuality: good=validated feeling/stayed curious, neutral=not defensive but missed depth, miss=defended/dismissed/explained self. breath=true if defensive response.';
+    sysPrompt='You are running an empathy training simulation. TWO roles:\n\nROLE 1 - '+herName+', a woman in an emotionally charged moment.\nScene: '+s.scene+'\nDifficulty: '+d.label+'. '+d.inst+'\nRespond as '+herName+' - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach.\nAfter '+herName+'s response give brief honest feedback addressing '+myName+' directly.\n\nReply ONLY as valid JSON, no markdown:\n{"nima":"response","quality":"good|neutral|miss","score":0-100,"feedback":"1-2 sentences","breath":true|false}';
   } else {
-    sysPrompt='You are Nima in an empathy training simulation.\nScene: '+s.scene+'\nDifficulty: '+d.label+'. '+d.inst+'\nRespond ONLY as Nima — authentically, briefly (1-3 sentences), emotionally real. Follow difficulty strictly. No coaching, no meta. Nima\'s words only — plain text, no JSON.';
+    sysPrompt='You are '+herName+' in an empathy training simulation.\nScene: '+s.scene+'\nDifficulty: '+d.label+'. '+d.inst+'\nRespond ONLY as '+herName+' - authentically, briefly (1-3 sentences). No coaching, no meta. Plain text only.';
   }
-
   var messages=[];
   for(var i=0;i<herReplies.length;i++){
     messages.push({role:'assistant',content:herReplies[i]});
     if(myReplies[i]) messages.push({role:'user',content:myReplies[i]});
   }
-
   try {
-    var res=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:sysPrompt,messages:messages})
-    });
-
+    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:sysPrompt,messages:messages})});
     if(!res.ok) throw new Error('API error '+res.status);
-    var data=await res.json();
-    rmTyping();
-
+    var data=await res.json(); rmTyping();
     if(mode==='practice'){
       var parsed;
-      try { parsed=JSON.parse(data.text.replace(/```json|```/g,'').trim()); }
-      catch(e){ parsed={nima:"I just need a moment.",quality:"neutral",score:50,feedback:"Keep going. Stay present with her.",breath:false}; }
-
-      herReplies.push(parsed.nima);
-      scores.push(parsed.score);
+      try{parsed=JSON.parse(data.text.replace(/```json|```/g,'').trim());}
+      catch(e){parsed={nima:"I just need a moment.",quality:"neutral",score:50,feedback:"Keep going.",breath:false};}
+      herReplies.push(parsed.nima); scores.push(parsed.score);
       setTimeout(function(){
         addMsg('her',parsed.nima);
         if(parsed.breath) document.getElementById('breath-div').style.display='block';
-
         var q=parsed.quality||'neutral';
         var lbl=q==='good'?'That landed well':q==='neutral'?'Getting there':'Try again';
         document.getElementById('fb-div').innerHTML='<div class="feedback '+q+'"><strong>'+lbl+'</strong>'+(parsed.feedback||'Keep going.')+'</div>';
-
         var act=document.getElementById('act-div');
-        if(count>=3){
-          act.innerHTML='<div class="action-row"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See my debrief</button></div>';
-        } else {
-          act.innerHTML='<div class="action-row"><button onclick="doNext()">Continue</button></div>';
-        }
+        if(count>=3){act.innerHTML='<div class="action-row"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See my debrief</button></div>';}
+        else{act.innerHTML='<div class="action-row"><button onclick="doNext()">Continue</button></div>';}
         busy=false; document.getElementById('sendbtn').disabled=false;
       },300);
-
     } else {
-      var nimaText=data.text.trim();
-      herReplies.push(nimaText);
+      var nt=data.text.trim(); herReplies.push(nt);
       setTimeout(function(){
-        addMsg('her',nimaText);
+        addMsg('her',nt);
         var act=document.getElementById('act-div');
-        if(count>=3){
-          act.innerHTML='<div class="action-row"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">End conversation</button></div>';
-        } else {
-          act.innerHTML='<div class="action-row"><button onclick="doNext()">Continue</button></div>';
-        }
+        if(count>=3){act.innerHTML='<div class="action-row"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">End conversation</button></div>';}
+        else{act.innerHTML='<div class="action-row"><button onclick="doNext()">Continue</button></div>';}
         busy=false; document.getElementById('sendbtn').disabled=false;
       },300);
     }
-
-  } catch(err) {
+  } catch(err){
     rmTyping();
-    document.getElementById('fb-div').innerHTML='<div class="error-msg">Could not reach the AI — check your connection and try again.</div>';
+    document.getElementById('fb-div').innerHTML='<div class="error-msg">Could not reach the AI. Check your connection and try again.</div>';
     busy=false; document.getElementById('sendbtn').disabled=false;
   }
 }
-
-function doNext() {
-  document.getElementById('act-div').innerHTML='';
-  document.getElementById('fb-div').innerHTML='';
-  document.getElementById('txt').focus();
-}
-
-function doDebrief() {
-  var avg=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):0;
+function doNext(){document.getElementById('act-div').innerHTML='';document.getElementById('fb-div').innerHTML='';document.getElementById('txt').focus();}
+function doDebrief(){
+  var avg=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):null;
   var dLabel=DIFF[diff].label;
+  var sName=sel?document.querySelector('.card[data-id="'+sel+'"] .ct').textContent:'Session';
+  saveSession(sName,mode==='practice'?avg:null);
   var pat,carry,title,sub;
-
   if(mode==='immersion'){
-    document.getElementById('fscore').textContent='—';
+    document.getElementById('fscore').textContent='-';
     document.getElementById('fscore-lbl').textContent='session';
-    title='Immersion complete';
-    sub=dLabel+' difficulty';
-    pat='You practiced without coaching on '+dLabel.toLowerCase()+' difficulty. Review the conversation above — where did she open up? Where did she stay closed?';
-    carry='Notice the moments she shifted. What did you say just before she opened? That\'s your empathy signature — build on it.';
+    title='Immersion complete'; sub=dLabel+' difficulty';
+    pat='You practiced without coaching on '+dLabel.toLowerCase()+' difficulty. Where did '+herName+' open up? Where did she stay closed?';
+    carry='Notice the moments she shifted. What did you say just before she opened? That is your empathy signature.';
   } else {
     document.getElementById('fscore').textContent=avg;
     document.getElementById('fscore-lbl').textContent='/ 100';
     title=avg>=80?'Excellent session':avg>=60?'Good session':'Keep practising';
-    sub=dLabel+' difficulty · Practice mode';
-    if(avg>=70){ pat='You showed genuine empathy — staying in her world rather than defending yours. That\'s the core skill and you\'re building it.'; carry='Keep practising the pause before responding. That moment is where empathy lives.'; }
-    else if(avg>=40){ pat='You\'re not getting defensive — real progress. The next layer is going deeper: from "I\'m sorry" to actually naming what she\'s feeling.'; carry='After your apology, add one sentence naming her emotion. "I\'m sorry — and I can see that really hurt you." Feel the difference.'; }
-    else { pat='Your instinct under pressure is to defend and explain. That\'s natural — but it keeps the door closed. Awareness is the first step.'; carry='Before your next difficult moment: pause, breathe, and ask — what is she feeling right now? That one question changes everything.'; }
+    sub=dLabel+' difficulty - Practice mode';
+    if(avg>=70){pat=myName+' showed genuine empathy, staying in '+herName+'s world. That is the core skill.';carry='Keep practising the pause before responding. That moment is where empathy lives.';}
+    else if(avg>=40){pat='Not getting defensive - real progress. Next layer is naming what '+herName+' is feeling.';carry='After your apology, add one sentence naming her emotion. I can see that really hurt you.';}
+    else{pat='The instinct under pressure is to defend. Awareness is the first step.';carry='Pause, breathe, and ask - what is '+herName+' feeling right now?';}
   }
-
   document.getElementById('d-title').textContent=title;
   document.getElementById('d-sub').textContent=sub;
   document.getElementById('d-pat').textContent=pat;
   document.getElementById('d-carry').textContent=carry;
   showPhase('ph-debrief');
 }
-
-function doRestart() {
-  document.querySelectorAll('.card[data-id]').forEach(function(c){c.classList.remove('sel');});
-  document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel');});
-  document.querySelectorAll('.card[data-mode]').forEach(function(c){c.classList.remove('sel');});
-  document.querySelector('.diff-card[data-diff="1"]').classList.add('sel');
-  document.querySelector('.card[data-mode="practice"]').classList.add('sel');
-  sel=null; diff=1; mode='practice';
-  var b=document.getElementById('beginbtn');
-  b.disabled=true; b.textContent='Choose a scenario to begin';
-  showPhase('ph-select');
-}
+if(loadNames()){showDashboard();}else{showPhase('ph-setup');}
 </script>
 </body>
 </html>
