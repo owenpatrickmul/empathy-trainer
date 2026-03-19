@@ -36,6 +36,8 @@
   .diff-card.d1.sel{border-color:#3B6D11;background:#EAF3DE;}
   .diff-card.d2.sel{border-color:#854F0B;background:#FAEEDA;}
   .diff-card.d3.sel{border-color:#993C1D;background:#FAECE7;}
+  .diff-card.d4 .ct{color:#501313;}
+  .diff-card.d4.sel{border-color:#501313;background:#FCEBEB;}
   .btn{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1.25rem;transition:opacity 0.15s;}
   .btn:hover{opacity:0.9;}.btn:disabled{opacity:0.35;cursor:not-allowed;}
   .btn-outline{background:transparent;color:var(--accent);border:1px solid var(--accent);}
@@ -56,6 +58,7 @@
   .badge.d1{background:#EAF3DE;color:#3B6D11;}
   .badge.d2{background:#FAEEDA;color:#854F0B;}
   .badge.d3{background:#FAECE7;color:#993C1D;}
+  .badge.d4{background:#FCEBEB;color:#501313;}
   .chatwin{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;min-height:120px;}
   .msg{display:flex;gap:10px;margin-bottom:14px;animation:msgIn 0.3s ease;}
   @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
@@ -162,12 +165,17 @@
       <div class="card" data-id="jealousy" onclick="pickS(this)"><div class="ct">Jealousy</div><div class="cd">She's jealous but won't say why</div></div>
       <div class="card" data-id="confidence" onclick="pickS(this)"><div class="ct">Crisis of confidence</div><div class="cd">She's doubting herself deeply</div></div>
       <div class="card" data-id="pullingaway" onclick="pickS(this)"><div class="ct">Pulling away</div><div class="cd">She's distant and you don't know why</div></div>
+      <div class="card" data-id="repair" onclick="pickS(this)"><div class="ct">Relationship repair</div><div class="cd">After a big argument — rebuilding the bridge</div></div>
+      <div class="card" data-id="jealousydeep" onclick="pickS(this)"><div class="ct">Deep jealousy</div><div class="cd">She's hurt by someone you were close to</div></div>
+      <div class="card" data-id="family" onclick="pickS(this)"><div class="ct">Family pressure</div><div class="cd">Your family is affecting her and she's at breaking point</div></div>
+      <div class="card" data-id="workstress" onclick="pickS(this)"><div class="ct">Work and ambition</div><div class="cd">She feels second to your career</div></div>
     </div>
     <div class="slabel">Difficulty</div>
     <div class="grid3">
       <div class="card diff-card d1 sel" data-diff="1" onclick="pickD(this)"><div class="ct">Gentle</div><div class="cd">Open and forgiving</div></div>
       <div class="card diff-card d2" data-diff="2" onclick="pickD(this)"><div class="ct">Guarded</div><div class="cd">Closed at first</div></div>
       <div class="card diff-card d3" data-diff="3" onclick="pickD(this)"><div class="ct">Defended</div><div class="cd">Hurt and pushing back</div></div>
+      <div class="card diff-card d4" data-diff="4" onclick="pickD(this)"><div class="ct">Breaking point</div><div class="cd">One wrong move and she's done talking</div></div>
     </div>
     <div class="slabel">Mode</div>
     <div class="grid2">
@@ -226,12 +234,17 @@ var SC={
   takenforgranted:{scene:"She's been doing everything lately. Tonight something breaks.",opening:"I just feel like everything I do goes completely unnoticed. Like I'm invisible."},
   jealousy:{scene:"You came home from an evening out with friends. She's been quiet since. Something feels off.",opening:"I'm fine. You had a good time?"},
   confidence:{scene:"She came home quiet after a difficult day. She sits down and finally says it.",opening:"I just feel like I'm not good enough. Like no matter what I do it's never quite right."},
-  pullingaway:{scene:"She's been different lately, quieter, more distant. Tonight you finally ask.",opening:"I don't know. I've just been in my own head a lot lately."}
+  pullingaway:{scene:"She's been different lately, quieter, more distant. Tonight you finally ask.",opening:"I don't know. I've just been in my own head a lot lately."},
+  repair:{scene:"You had a serious argument two days ago. Things were said. You've both been quiet since. Tonight you sit down together.",opening:"I don't even know where to start. I'm still hurt from the other night."},
+  jealousydeep:{scene:"She saw messages on your phone from someone she's always felt uneasy about. She hasn't said anything for hours. Now you're alone.",opening:"I just need you to be honest with me. What is she to you?"},
+  family:{scene:"Your family has been making her feel like an outsider. A comment at dinner tonight was the last straw. She's quiet on the drive home.",opening:"I can't keep doing this. I feel like I'm invisible to the people who are supposed to matter most to you."},
+  workstress:{scene:"You've been putting in long hours for months. Missed dinners, cancelled plans. She's been patient but tonight something broke.",opening:"I feel like I'm in a relationship with your job. Not with you."}
 };
 var DIFF={
   1:{label:"Gentle",inst:"She is sad but open and forgiving. She responds warmly to even imperfect empathy. She opens up relatively easily."},
   2:{label:"Guarded",inst:"She is emotionally closed at first. She needs genuine curiosity and validation before she opens up. Defensive responses make her withdraw."},
-  3:{label:"Defended",inst:"She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly."}
+  3:{label:"Defended",inst:"She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly."},
+  4:{label:"Breaking point",inst:"She is at the absolute edge. She has been carrying this alone for too long and is on the verge of shutting down completely. She needs to feel heard within the first response or she will close entirely. One defensive, dismissive or explanatory response ends the conversation. This is the highest stakes scenario — only genuine, immediate empathy keeps the door open."}
 };
 
 var myName='You',herName='Her',sel=null,diff=1,mode='practice',count=0,scores=[],myReplies=[],herReplies=[],busy=false;
@@ -256,7 +269,7 @@ function loadHistory(){
   var recent=history.slice(-6).reverse();
   list.innerHTML=recent.map(function(h){
     var scoreHtml=h.score!==null?'<div class="hi-score">'+h.score+'</div>':'<div class="hi-score no-score">Immersion</div>';
-    var dl=h.diff===1?'Gentle':h.diff===2?'Guarded':'Defended';
+    var dl=h.diff===1?'Gentle':h.diff===2?'Guarded':h.diff===3?'Defended':'Breaking point';
     return '<div class="history-item"><div class="hi-left"><strong>'+h.scenario+'</strong>'+dl+' - '+h.date+'</div>'+scoreHtml+'</div>';
   }).join('');
 }
@@ -297,7 +310,7 @@ function begin(){
   count=0;scores=[];myReplies=[];herReplies=[];
   var bw=document.getElementById('badges');
   var ml=mode==='practice'?'<div class="badge mode-p">Practice</div>':'<div class="badge mode-i">Immersion</div>';
-  var dl=diff===1?'<div class="badge d1">Gentle</div>':diff===2?'<div class="badge d2">Guarded</div>':'<div class="badge d3">Defended</div>';
+  var dl=diff===1?'<div class="badge d1">Gentle</div>':diff===2?'<div class="badge d2">Guarded</div>':diff===3?'<div class="badge d3">Defended</div>':'<div class="badge d4">Breaking point</div>';
   bw.innerHTML=ml+dl;
   showPhase('ph-chat');
   setTimeout(function(){addMsg('her',s.opening);},600);
