@@ -112,6 +112,15 @@
   .history-item .hi-score.no-score{font-size:14px;color:var(--text3);}
   .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
   .top-bar-link{font-size:13px;color:var(--accent);cursor:pointer;}
+  .chip-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .chip-row::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border2);color:var(--text2);background:var(--surface);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+  .chip:hover{border-color:var(--accent-mid);color:var(--accent);}
+  .chip.sel{background:var(--accent);color:white;border-color:var(--accent);}
+  .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;animation:msgIn 0.2s ease;}
+  .preview-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px;}
+  .preview-scene{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+  .preview-opening{font-size:13px;color:var(--accent);font-style:italic;line-height:1.6;padding:10px 14px;background:var(--accent-light);border-radius:var(--radius-sm);}
   .loading-debrief{text-align:center;padding:2rem;color:var(--text2);font-size:14px;}
   .loading-debrief .spinner{width:32px;height:32px;border:3px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
   @keyframes spin{to{transform:rotate(360deg);}}
@@ -188,19 +197,24 @@
       <span class="top-bar-link" onclick="showDashboard()">Back</span>
     </div>
     <div class="slabel">Choose a scenario</div>
-    <div class="grid2">
-      <div class="card" data-id="neglected" onclick="pickS(this)"><div class="ct">Feeling neglected</div><div class="cd">She says you never make time for her</div></div>
-      <div class="card" data-id="hurt" onclick="pickS(this)"><div class="ct">Something you said</div><div class="cd">She felt hurt or embarrassed by your words</div></div>
-      <div class="card" data-id="overwhelmed" onclick="pickS(this)"><div class="ct">Overwhelmed and closed</div><div class="cd">She's distant, says "I'm fine"</div></div>
-      <div class="card" data-id="criticism" onclick="pickS(this)"><div class="ct">Direct criticism</div><div class="cd">She says you always do this</div></div>
-      <div class="card" data-id="takenforgranted" onclick="pickS(this)"><div class="ct">Taken for granted</div><div class="cd">She feels invisible and unappreciated</div></div>
-      <div class="card" data-id="jealousy" onclick="pickS(this)"><div class="ct">Jealousy</div><div class="cd">She's jealous but won't say why</div></div>
-      <div class="card" data-id="confidence" onclick="pickS(this)"><div class="ct">Crisis of confidence</div><div class="cd">She's doubting herself deeply</div></div>
-      <div class="card" data-id="pullingaway" onclick="pickS(this)"><div class="ct">Pulling away</div><div class="cd">She's distant and you don't know why</div></div>
-      <div class="card" data-id="repair" onclick="pickS(this)"><div class="ct">Relationship repair</div><div class="cd">After a big argument — rebuilding the bridge</div></div>
-      <div class="card" data-id="jealousydeep" onclick="pickS(this)"><div class="ct">Deep jealousy</div><div class="cd">She's hurt by someone you were close to</div></div>
-      <div class="card" data-id="family" onclick="pickS(this)"><div class="ct">Family pressure</div><div class="cd">Your family is affecting her and she's at breaking point</div></div>
-      <div class="card" data-id="workstress" onclick="pickS(this)"><div class="ct">Work and ambition</div><div class="cd">She feels second to your career</div></div>
+    <div class="chip-row" id="chip-row">
+      <div class="chip sel" data-id="neglected" onclick="pickChip(this)">Neglected</div>
+      <div class="chip" data-id="hurt" onclick="pickChip(this)">Hurt</div>
+      <div class="chip" data-id="overwhelmed" onclick="pickChip(this)">Closed off</div>
+      <div class="chip" data-id="criticism" onclick="pickChip(this)">Criticism</div>
+      <div class="chip" data-id="takenforgranted" onclick="pickChip(this)">Invisible</div>
+      <div class="chip" data-id="jealousy" onclick="pickChip(this)">Jealousy</div>
+      <div class="chip" data-id="confidence" onclick="pickChip(this)">Confidence</div>
+      <div class="chip" data-id="pullingaway" onclick="pickChip(this)">Pulling away</div>
+      <div class="chip" data-id="repair" onclick="pickChip(this)">Repair</div>
+      <div class="chip" data-id="jealousydeep" onclick="pickChip(this)">Deep jealousy</div>
+      <div class="chip" data-id="family" onclick="pickChip(this)">Family</div>
+      <div class="chip" data-id="workstress" onclick="pickChip(this)">Work</div>
+    </div>
+    <div class="preview-card" id="preview-card">
+      <div class="preview-title" id="preview-title">Feeling neglected</div>
+      <div class="preview-scene" id="preview-scene"></div>
+      <div class="preview-opening" id="preview-opening"></div>
     </div>
     <div class="slabel">Difficulty</div>
     <div class="grid3">
@@ -279,7 +293,7 @@ var DIFF={
   4:{label:"Breaking point",inst:"She is at the absolute edge. She has been carrying this alone for too long and is on the verge of shutting down completely. She needs to feel heard within the first response or she will close entirely. One defensive, dismissive or explanatory response ends the conversation. This is the highest stakes scenario — only genuine, immediate empathy keeps the door open."}
 };
 
-var myName='You',herName='Her',sel=null,diff=1,mode='practice',count=0,scores=[],myReplies=[],herReplies=[],busy=false;
+var myName='You',herName='Her',sel='neglected',diff=1,mode='practice',count=0,scores=[],myReplies=[],herReplies=[],busy=false;
 var lastSel=null,lastDiff=1,lastMode='practice';
 
 function loadNames(){var s=localStorage.getItem('et_names');if(s){var n=JSON.parse(s);myName=n.me||'You';herName=n.her||'Her';return true;}return false;}
@@ -319,6 +333,17 @@ function showPhase(id){
   window.scrollTo(0,0);
 }
 
+function pickChip(el){
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  sel=el.dataset.id;
+  var s=SC[sel];
+  document.getElementById('preview-title').textContent=el.textContent;
+  document.getElementById('preview-scene').textContent=s.scene;
+  document.getElementById('preview-opening').textContent='"'+s.opening+'"';
+  document.getElementById('beginbtn').disabled=false;
+  document.getElementById('beginbtn').textContent='Begin — '+el.textContent;
+}
 function pickS(el){
   document.querySelectorAll('.card[data-id]').forEach(function(c){c.classList.remove('sel');});
   el.classList.add('sel');sel=el.dataset.id;
@@ -497,6 +522,11 @@ async function doDebrief(){
 }
 
 if(loadNames()){showDashboard();}else{showPhase('ph-setup');}
+// Init preview card with first scenario
+(function(){
+  var first=document.querySelector('.chip.sel');
+  if(first) pickChip(first);
+})();
 </script>
 </body>
 </html>
