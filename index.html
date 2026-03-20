@@ -4,166 +4,161 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Empathy Trainer</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#F7F4EF;--surface:#FFFFFF;--surface2:#F0EDE8;
-    --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
-    --text:#1A1714;--text2:#6B6560;--text3:#9E9894;
-    --accent:#4A3F8F;--accent-light:#EEEDFE;--accent-mid:#7B72C4;
-    --her-bg:#F0EDE8;--you-bg:#EEEDFE;--you-text:#26215C;
-    --good:#EAF3DE;--good-b:#3B6D11;--good-t:#27500A;
-    --neutral:#FAEEDA;--neutral-b:#854F0B;--neutral-t:#633806;
-    --miss:#FAECE7;--miss-b:#993C1D;--miss-t:#712B13;
-    --radius:16px;--radius-sm:10px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
-  .app{max-width:680px;margin:0 auto;padding:2rem 1rem 4rem;}
-  .logo{text-align:center;margin-bottom:2rem;}
-  .logo h1{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);letter-spacing:-0.5px;}
-  .logo p{font-size:14px;color:var(--text3);margin-top:4px;font-weight:300;}
-  .phase{display:none;}.phase.active{display:block;}
-  .slabel{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;margin-top:1.5rem;}
-  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:4px;}
-  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;cursor:pointer;transition:all 0.15s;text-align:left;}
-  .card:hover{border-color:var(--border2);background:var(--surface2);}
-  .card.sel{border-color:var(--accent);background:var(--accent-light);}
-  .card .ct{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
-  .card .cd{font-size:12px;color:var(--text2);line-height:1.4;}
-  .diff-card.d1 .ct{color:#3B6D11;}.diff-card.d2 .ct{color:#854F0B;}.diff-card.d3 .ct{color:#993C1D;}
-  .diff-card.d1.sel{border-color:#3B6D11;background:#EAF3DE;}
-  .diff-card.d2.sel{border-color:#854F0B;background:#FAEEDA;}
-  .diff-card.d3.sel{border-color:#993C1D;background:#FAECE7;}
-  .diff-card.d4 .ct{color:#501313;}
-  .diff-card.d4.sel{border-color:#501313;background:#FCEBEB;}
-  .btn{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1.25rem;transition:opacity 0.15s;}
-  .btn:hover{opacity:0.9;}.btn:disabled{opacity:0.35;cursor:not-allowed;}
-  .btn-outline{background:transparent;color:var(--accent);border:1px solid var(--accent);}
-  .btn-outline:hover{background:var(--accent-light);opacity:1;}
-  .name-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1rem;}
-  .name-card h2{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:6px;}
-  .name-card p{font-size:14px;color:var(--text2);margin-bottom:1.5rem;}
-  .field{margin-bottom:1rem;}
-  .field label{font-size:11px;font-weight:500;color:var(--text3);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
-  .field input{width:100%;padding:11px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);transition:border-color 0.15s;}
-  .field input:focus{outline:none;border-color:var(--accent-mid);}
-  .scene-banner{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:14px 18px;margin-bottom:1rem;font-size:13px;color:var(--text2);line-height:1.6;}
-  .scene-banner strong{display:block;font-size:10px;font-weight:500;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-  .badges{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
-  .badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;}
-  .badge.mode-p{background:var(--accent-light);color:var(--accent);}
-  .badge.mode-i{background:#E1F5EE;color:#085041;}
-  .badge.d1{background:#EAF3DE;color:#3B6D11;}
-  .badge.d2{background:#FAEEDA;color:#854F0B;}
-  .badge.d3{background:#FAECE7;color:#993C1D;}
-  .badge.d4{background:#FCEBEB;color:#501313;}
-  .chatwin{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;min-height:120px;}
-  .msg{display:flex;gap:10px;margin-bottom:14px;animation:msgIn 0.3s ease;}
-  @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-  .msg.her{align-items:flex-start;}.msg.you{align-items:flex-start;flex-direction:row-reverse;}
-  .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;font-family:'DM Serif Display',serif;}
-  .avatar.h{background:#F4C0D1;color:#72243E;}.avatar.y{background:var(--accent-light);color:var(--accent);}
-  .bubble{max-width:76%;padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.65;}
-  .msg.her .bubble{background:var(--her-bg);color:var(--text);border-bottom-left-radius:4px;}
-  .msg.you .bubble{background:var(--you-bg);color:var(--you-text);border-bottom-right-radius:4px;}
-  .typing-wrap{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
-  .typing-bubble{display:flex;align-items:center;gap:5px;padding:11px 16px;background:var(--her-bg);border-radius:18px;border-bottom-left-radius:4px;}
-  .dot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite;}
-  .dot:nth-child(2){animation-delay:0.2s;}.dot:nth-child(3){animation-delay:0.4s;}
-  @keyframes bounce{0%,60%,100%{transform:none;}30%{transform:translateY(-5px);}}
-  .breath-prompt{background:var(--accent-light);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem;font-size:13px;color:var(--accent);line-height:1.7;text-align:center;}
-  .breath-prompt strong{display:block;font-weight:500;margin-bottom:3px;font-family:'DM Serif Display',serif;font-size:15px;}
-  .input-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;}
-  .input-area label{font-size:11px;font-weight:500;color:var(--text3);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
-  .input-area textarea{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);resize:none;line-height:1.6;transition:border-color 0.15s;}
-  .input-area textarea:focus{outline:none;border-color:var(--accent-mid);}
-  .send-btn{width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:10px;transition:opacity 0.15s;}
-  .send-btn:hover{opacity:0.9;}.send-btn:disabled{opacity:0.4;cursor:not-allowed;}
-  .feedback{border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem;font-size:13px;line-height:1.7;animation:msgIn 0.4s ease;}
-  .feedback strong{display:block;font-size:10px;font-weight:500;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
-  .feedback.good{background:var(--good);border-left:3px solid var(--good-b);color:var(--good-t);}
-  .feedback.neutral{background:var(--neutral);border-left:3px solid var(--neutral-b);color:var(--neutral-t);}
-  .feedback.miss{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);}
-  .arow{display:flex;gap:8px;margin-top:1rem;}
-  .arow button{flex:1;padding:11px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text);transition:background 0.15s;}
-  .arow button:hover{background:var(--surface2);}
-  .arow button.pri{background:var(--accent);color:white;border-color:var(--accent);}
-  .arow button.pri:hover{opacity:0.9;background:var(--accent);}
-  .debrief-score{text-align:center;padding:2rem 1rem 1.5rem;}
-  .score-ring{width:120px;height:120px;border-radius:50%;background:var(--accent-light);border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;}
-  .score-ring .num{font-family:'DM Serif Display',serif;font-size:42px;color:var(--accent);line-height:1;}
-  .score-ring .lbl{font-size:10px;color:var(--accent-mid);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
-  .debrief-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:0.25rem;}
-  .debrief-sub{font-size:13px;color:var(--text3);margin-bottom:1.5rem;}
-  .insight{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;font-size:13px;line-height:1.7;color:var(--text);margin-bottom:10px;text-align:left;}
-  .insight strong{display:block;font-size:10px;font-weight:500;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
-  .error-msg{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:1rem;}
-  .progress-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;}
-  .stat-card .snum{font-family:'DM Serif Display',serif;font-size:28px;color:var(--accent);line-height:1;margin-bottom:4px;}
-  .stat-card .slbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;}
-  .history-list{margin-bottom:1.5rem;}
-  .history-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;font-size:13px;}
-  .history-item .hi-left{color:var(--text2);}
-  .history-item .hi-left strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px;}
-  .history-item .hi-score{font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);}
-  .history-item .hi-score.no-score{font-size:14px;color:var(--text3);}
-  .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
-  .top-bar-link{font-size:13px;color:var(--accent);cursor:pointer;}
-  .chip-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-  .chip-row::-webkit-scrollbar{display:none;}
-  .chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border2);color:var(--text2);background:var(--surface);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
-  .chip:hover{border-color:var(--accent-mid);color:var(--accent);}
-  .chip.sel{background:var(--accent);color:white;border-color:var(--accent);}
-  .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;animation:msgIn 0.2s ease;}
-  .preview-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px;}
-  .preview-scene{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
-  .preview-opening{font-size:13px;color:var(--accent);font-style:italic;line-height:1.6;padding:10px 14px;background:var(--accent-light);border-radius:var(--radius-sm);}
-  .loading-debrief{text-align:center;padding:2rem;color:var(--text2);font-size:14px;}
-  .loading-debrief .spinner{width:32px;height:32px;border:3px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  @media(max-width:500px){
-    .grid2{grid-template-columns:1fr;}
-    .grid3{grid-template-columns:1fr 1fr;}
-    .progress-grid{grid-template-columns:1fr 1fr 1fr;}
-    .app{padding:1.25rem 0.85rem 3rem;}
-    .logo h1{font-size:26px;}
-    .logo{margin-bottom:1.25rem;}
-    .name-card{padding:1.5rem;}
-    .btn{padding:15px;font-size:15px;}
-    .send-btn{padding:15px;font-size:16px;}
-    .input-area textarea{font-size:16px;min-height:72px;}
-    .card{padding:12px 14px;}
-    .card .ct{font-size:13px;}
-    .card .cd{font-size:11px;}
-    .arow button{padding:13px 8px;font-size:12px;}
-    .bubble{max-width:88%;font-size:14px;}
-    .scene-banner{padding:12px 14px;font-size:13px;}
-    .feedback{padding:12px 14px;}
-    .insight{padding:14px 16px;}
-    .score-ring{width:100px;height:100px;}
-    .score-ring .num{font-size:36px;}
-    .debrief-title{font-size:18px;}
-    .history-item{padding:10px 14px;}
-    .stat-card{padding:12px 10px;}
-    .stat-card .snum{font-size:24px;}
-    .field input{font-size:16px;padding:13px 14px;}
-  }
-  @media(max-width:360px){
-    .grid3{grid-template-columns:1fr;}
-    .progress-grid{grid-template-columns:1fr 1fr;}
-    .arow{flex-direction:column;}
-    .arow button{flex:none;width:100%;}
-  }
+:root{--bg:#FAFAF9;--surface:#FFF;--border:#E5E7EB;--border2:#C4B5FD;--text:#1E1B2E;--text2:#6B7280;--text3:#9CA3AF;--accent:#7C3AED;--accent-light:#F3E8FF;--accent-mid:#A78BFA;--accent-dark:#5B21B6;--her-bg:#F5F3FF;--you-bg:#EDE9FE;--you-text:#3B0764;--good:#F0FDF4;--good-b:#16A34A;--good-t:#14532D;--neutral:#FFFBEB;--neutral-b:#D97706;--neutral-t:#78350F;--miss:#FFF1F2;--miss-b:#E11D48;--miss-t:#881337;--radius:16px;--radius-sm:10px;--radius-xs:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.app{max-width:640px;margin:0 auto;padding:2rem 1rem 5rem;}
+.logo{text-align:center;margin-bottom:2rem;}
+.logo-badge{display:inline-flex;align-items:center;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:1rem;}
+.logo h1{font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:8px;}
+.logo h1 span{color:var(--accent);}
+.logo p{font-size:15px;color:var(--text2);max-width:340px;margin:0 auto;}
+.phase{display:none;}.phase.active{display:block;}
+.slabel{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;margin-top:1.5rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;cursor:pointer;transition:all 0.2s;text-align:left;}
+.card:hover{border-color:var(--accent-mid);box-shadow:0 4px 12px rgba(124,58,237,0.08);transform:translateY(-1px);}
+.card.sel{border-color:var(--accent);background:var(--accent-light);}
+.card .ct{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.card .cd{font-size:12px;color:var(--text2);line-height:1.4;}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.mode-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 18px;cursor:pointer;transition:all 0.2s;text-align:left;position:relative;}
+.mode-card:hover{border-color:var(--accent-mid);box-shadow:0 4px 16px rgba(124,58,237,0.1);transform:translateY(-1px);}
+.mode-icon{font-size:24px;margin-bottom:10px;display:block;}
+.mode-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mode-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+.mode-time{font-size:11px;font-weight:600;color:var(--text3);margin-top:8px;}
+.mode-badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;background:var(--accent);color:white;padding:3px 8px;border-radius:20px;}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px;}
+.diff-card.d1 .ct{color:#16A34A;}.diff-card.d2 .ct{color:#D97706;}.diff-card.d3 .ct{color:#E11D48;}.diff-card.d4 .ct{color:#7C3AED;}
+.diff-card.d1.sel{border-color:#16A34A;background:#F0FDF4;}
+.diff-card.d2.sel{border-color:#D97706;background:#FFFBEB;}
+.diff-card.d3.sel{border-color:#E11D48;background:#FFF1F2;}
+.diff-card.d4.sel{border-color:#7C3AED;background:#F3E8FF;}
+.chip-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.chip-row::-webkit-scrollbar{display:none;}
+.chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border);color:var(--text2);background:var(--surface);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.chip:hover{border-color:var(--accent-mid);color:var(--accent);}
+.chip.sel{background:var(--accent);color:white;border-color:var(--accent);}
+.preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;animation:fadeUp 0.2s ease;}
+.preview-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.preview-scene{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.preview-opening{font-size:13px;color:var(--accent-dark);font-style:italic;line-height:1.6;padding:10px 14px;background:var(--accent-light);border-radius:var(--radius-xs);border-left:3px solid var(--accent);}
+.btn{width:100%;padding:14px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;margin-top:1.25rem;transition:all 0.2s;}
+.btn:hover{background:var(--accent-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,0.3);}
+.btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;}
+.name-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1rem;}
+.name-card h2{font-size:22px;font-weight:700;margin-bottom:6px;}
+.name-card p{font-size:14px;color:var(--text2);margin-bottom:1.5rem;}
+.field{margin-bottom:1rem;}
+.field label{font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
+.field input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-xs);font-size:16px;font-family:Inter,sans-serif;color:var(--text);background:var(--bg);transition:border-color 0.15s;}
+.field input:focus{outline:none;border-color:var(--accent);}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.top-bar-link{font-size:13px;color:var(--accent);cursor:pointer;font-weight:500;}
+.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;}
+.stat-card .snum{font-size:28px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;}
+.stat-card .slbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.history-list{margin-bottom:1.5rem;}
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;font-size:13px;}
+.history-item .hi-left{color:var(--text2);}
+.history-item .hi-left strong{display:block;color:var(--text);font-size:13px;font-weight:600;margin-bottom:2px;}
+.history-item .hi-score{font-size:22px;font-weight:800;color:var(--accent);}
+.history-item .hi-score.no-score{font-size:13px;font-weight:500;color:var(--text3);}
+.scene-banner{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 16px;margin-bottom:1rem;font-size:13px;color:var(--text2);line-height:1.6;}
+.scene-banner strong{display:block;font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
+.badges{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
+.badge{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;}
+.badge.mode-p{background:var(--accent-light);color:var(--accent);}
+.badge.mode-i{background:#ECFDF5;color:#065F46;}
+.badge.d1{background:#F0FDF4;color:#16A34A;}.badge.d2{background:#FFFBEB;color:#D97706;}
+.badge.d3{background:#FFF1F2;color:#E11D48;}.badge.d4{background:#F3E8FF;color:#7C3AED;}
+.chat-win{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;min-height:120px;}
+.msg{display:flex;gap:10px;margin-bottom:14px;animation:fadeUp 0.3s ease;}
+.msg.her{align-items:flex-start;}.msg.you{align-items:flex-start;flex-direction:row-reverse;}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.avatar.h{background:#EDE9FE;color:#5B21B6;}.avatar.y{background:var(--accent-light);color:var(--accent);}
+.bubble{max-width:76%;padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.65;}
+.msg.her .bubble{background:var(--her-bg);color:var(--text);border-bottom-left-radius:4px;}
+.msg.you .bubble{background:var(--you-bg);color:var(--you-text);border-bottom-right-radius:4px;}
+.typing-wrap{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+.typing-bubble{display:flex;align-items:center;gap:5px;padding:11px 16px;background:var(--her-bg);border-radius:18px;border-bottom-left-radius:4px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite;}
+.dot:nth-child(2){animation-delay:0.2s;}.dot:nth-child(3){animation-delay:0.4s;}
+.breath-box{background:var(--accent-light);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem;font-size:13px;color:var(--accent-dark);line-height:1.7;text-align:center;}
+.breath-box strong{display:block;font-weight:700;margin-bottom:3px;font-size:15px;}
+.input-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;}
+.input-area label{font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.input-area textarea{width:100%;min-height:80px;border:1.5px solid var(--border);border-radius:var(--radius-xs);padding:11px 14px;font-size:16px;font-family:Inter,sans-serif;color:var(--text);background:var(--bg);resize:none;line-height:1.6;transition:border-color 0.15s;}
+.input-area textarea:focus{outline:none;border-color:var(--accent);}
+.send-btn{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:var(--radius-xs);font-size:14px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;margin-top:10px;transition:all 0.2s;}
+.send-btn:hover{background:var(--accent-dark);}.send-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.feedback{border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem;font-size:13px;line-height:1.7;animation:fadeUp 0.3s ease;}
+.feedback strong{display:block;font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
+.feedback.good{background:var(--good);border-left:3px solid var(--good-b);color:var(--good-t);}
+.feedback.neutral{background:var(--neutral);border-left:3px solid var(--neutral-b);color:var(--neutral-t);}
+.feedback.miss{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);}
+.error-msg{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:1rem;}
+.arow{display:flex;gap:8px;margin-top:1rem;}
+.arow button{flex:1;padding:12px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text);transition:all 0.15s;}
+.arow button:hover{background:var(--bg);}
+.arow button.pri{background:var(--accent);color:white;border-color:var(--accent);}
+.arow button.pri:hover{background:var(--accent-dark);}
+.debrief-score{text-align:center;padding:2rem 1rem 1.5rem;}
+.score-ring{width:120px;height:120px;border-radius:50%;background:var(--accent-light);border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;}
+.score-ring .num{font-size:42px;font-weight:800;color:var(--accent);line-height:1;}
+.score-ring .lbl{font-size:10px;color:var(--accent-mid);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;font-weight:600;}
+.debrief-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.5px;}
+.debrief-sub{font-size:13px;color:var(--text3);margin-bottom:1.5rem;font-weight:500;}
+.insight{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;font-size:13px;line-height:1.7;color:var(--text);margin-bottom:10px;}
+.insight strong{display:block;font-size:10px;font-weight:700;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
+.loading-debrief{text-align:center;padding:2rem;color:var(--text2);font-size:14px;}
+.spinner{width:32px;height:32px;border:3px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
+.qm-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+.qm-progress-bar{height:6px;background:var(--border);border-radius:3px;margin-bottom:12px;overflow:hidden;}
+.qm-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.4s ease;}
+.qm-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.qm-num{font-size:12px;font-weight:600;color:var(--text3);}
+.qm-cat{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:12px;}
+.qm-speaker{font-size:13px;color:var(--text2);margin-bottom:8px;}
+.qm-quote{font-size:15px;font-weight:500;color:var(--text);line-height:1.6;font-style:italic;padding:12px 16px;background:var(--bg);border-left:3px solid var(--accent);border-radius:0 var(--radius-xs) var(--radius-xs) 0;}
+.qm-prompt{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:1rem 0 10px;}
+.qm-options{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem;}
+.qm-option{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;cursor:pointer;font-size:14px;line-height:1.5;color:var(--text);text-align:left;transition:all 0.15s;font-family:Inter,sans-serif;}
+.qm-option:hover{border-color:var(--accent-mid);background:var(--accent-light);}
+.qm-option.sel-good{border-color:var(--good-b);background:var(--good);color:var(--good-t);cursor:default;}
+.qm-option.sel-miss{border-color:var(--miss-b);background:var(--miss);color:var(--miss-t);cursor:default;}
+.qm-option.reveal{border-color:var(--good-b);background:var(--good);color:var(--good-t);cursor:default;}
+.qm-option.faded{opacity:0.35;cursor:default;}
+.qm-fb{border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem;font-size:13px;line-height:1.7;animation:fadeUp 0.3s ease;}
+.qm-fb .qf-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.qm-fb.good{background:var(--good);border-left:3px solid var(--good-b);color:var(--good-t);}
+.qm-fb.miss{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);}
+.qm-result{text-align:center;padding:2rem 1rem;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@keyframes bounce{0%,60%,100%{transform:none;}30%{transform:translateY(-5px);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(max-width:500px){
+  .app{padding:1.25rem 0.9rem 4rem;}
+  .logo h1{font-size:30px;}
+  .mode-grid{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .btn,.send-btn{padding:15px;}
+  .bubble{max-width:88%;}
+  .score-ring{width:100px;height:100px;}
+  .score-ring .num{font-size:36px;}
+}
+@media(max-width:360px){.arow{flex-direction:column;}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="logo">
-    <h1>Empathy Trainer</h1>
-    <p>Practice real conversations. Build real connection.</p>
+    <div class="logo-badge">Free · No signup required</div>
+    <h1>Train Your <span>Empathy</span></h1>
+    <p>Empathy is not just a feeling — it is a skill you can practise.</p>
   </div>
 
   <div id="ph-setup" class="phase active">
@@ -181,23 +176,46 @@
       <div style="font-size:13px;color:var(--text2)">Welcome back, <strong id="dash-name" style="color:var(--text)"></strong></div>
       <span class="top-bar-link" onclick="showSetup()">Change names</span>
     </div>
-    <div class="progress-grid">
+    <div class="stat-grid">
       <div class="stat-card"><div class="snum" id="stat-sessions">0</div><div class="slbl">Sessions</div></div>
       <div class="stat-card"><div class="snum" id="stat-avg">-</div><div class="slbl">Avg score</div></div>
       <div class="stat-card"><div class="snum" id="stat-best">-</div><div class="slbl">Best score</div></div>
     </div>
     <div class="slabel">Recent sessions</div>
     <div class="history-list" id="history-list"></div>
-    <button class="btn" onclick="showSelect()">Start new session</button>
+    <button class="btn" onclick="showModeSelect()">Start new session</button>
   </div>
 
-  <div id="ph-select" class="phase">
+  <div id="ph-mode" class="phase">
     <div class="top-bar">
       <div style="font-size:13px;color:var(--text2)">New session</div>
       <span class="top-bar-link" onclick="showDashboard()">Back</span>
     </div>
+    <div class="slabel">How do you want to practise?</div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startLive()">
+        <span class="mode-icon">&#128483;</span>
+        <div class="mode-badge">Deep</div>
+        <div class="mode-title">Live Conversation</div>
+        <div class="mode-desc">Multi-turn dialogue. She opens up or shuts down based on your empathy.</div>
+        <div class="mode-time">10 to 15 min</div>
+      </div>
+      <div class="mode-card" onclick="startQuick()">
+        <span class="mode-icon">&#9889;</span>
+        <div class="mode-title">Quick Mode</div>
+        <div class="mode-desc">Choose from responses and get instant feedback on what works and why.</div>
+        <div class="mode-time">5 min, 10 scenarios</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ph-select" class="phase">
+    <div class="top-bar">
+      <div style="font-size:13px;color:var(--text2)">Live Conversation</div>
+      <span class="top-bar-link" onclick="showModeSelect()">Back</span>
+    </div>
     <div class="slabel">Choose a scenario</div>
-    <div class="chip-row" id="chip-row">
+    <div class="chip-row">
       <div class="chip sel" data-id="neglected" onclick="pickChip(this)">Neglected</div>
       <div class="chip" data-id="hurt" onclick="pickChip(this)">Hurt</div>
       <div class="chip" data-id="overwhelmed" onclick="pickChip(this)">Closed off</div>
@@ -211,34 +229,33 @@
       <div class="chip" data-id="family" onclick="pickChip(this)">Family</div>
       <div class="chip" data-id="workstress" onclick="pickChip(this)">Work</div>
     </div>
-    <div class="preview-card" id="preview-card">
+    <div class="preview-card">
       <div class="preview-title" id="preview-title">Feeling neglected</div>
       <div class="preview-scene" id="preview-scene"></div>
       <div class="preview-opening" id="preview-opening"></div>
     </div>
     <div class="slabel">Difficulty</div>
     <div class="grid3">
-      <div class="card diff-card d1 sel" data-diff="1" onclick="pickD(this)"><div class="ct">Gentle</div><div class="cd">Open and forgiving</div></div>
+      <div class="card diff-card d1 sel" data-diff="1" onclick="pickD(this)"><div class="ct">Gentle</div><div class="cd">Open, forgiving</div></div>
       <div class="card diff-card d2" data-diff="2" onclick="pickD(this)"><div class="ct">Guarded</div><div class="cd">Closed at first</div></div>
-      <div class="card diff-card d3" data-diff="3" onclick="pickD(this)"><div class="ct">Defended</div><div class="cd">Hurt and pushing back</div></div>
-      <div class="card diff-card d4" data-diff="4" onclick="pickD(this)"><div class="ct">Breaking point</div><div class="cd">One wrong move and she's done talking</div></div>
+      <div class="card diff-card d3" data-diff="3" onclick="pickD(this)"><div class="ct">Defended</div><div class="cd">Pushing back</div></div>
+    </div>
+    <div style="margin-top:8px">
+      <div class="card diff-card d4" data-diff="4" onclick="pickD(this)"><div class="ct">Breaking point</div><div class="cd">One wrong move and she stops talking</div></div>
     </div>
     <div class="slabel">Mode</div>
-    <div class="grid2">
-      <div class="card sel" data-mode="practice" onclick="pickM(this)"><div class="ct">Practice mode</div><div class="cd">Coaching and scores after every exchange</div></div>
-      <div class="card" data-mode="immersion" onclick="pickM(this)"><div class="ct">Immersion mode</div><div class="cd">No coaching, just you and her</div></div>
+    <div class="mode-grid" style="grid-template-columns:1fr 1fr">
+      <div class="card sel" data-mode="practice" onclick="pickM(this)"><div class="ct">Practice</div><div class="cd">Coaching after every exchange</div></div>
+      <div class="card" data-mode="immersion" onclick="pickM(this)"><div class="ct">Immersion</div><div class="cd">Just you and her</div></div>
     </div>
-    <button class="btn" id="beginbtn" onclick="begin()" disabled>Choose a scenario to begin</button>
+    <button class="btn" id="beginbtn" onclick="begin()">Begin</button>
   </div>
 
   <div id="ph-chat" class="phase">
     <div class="scene-banner"><strong>The scene</strong><span id="scene-txt"></span></div>
     <div class="badges" id="badges"></div>
-    <div class="chatwin" id="chatwin"></div>
-    <div id="breath-div" class="breath-prompt" style="display:none">
-      <strong>Pause</strong>
-      Breathe in for 4... hold for 2... out for 6.<br>What is she feeling right now?
-    </div>
+    <div class="chat-win" id="chatwin"></div>
+    <div id="breath-div" class="breath-box" style="display:none"><strong>Pause</strong>Breathe in for 4... hold for 2... out for 6.<br>What is she feeling right now?</div>
     <div class="input-area" id="input-block">
       <label id="input-label">Your response</label>
       <textarea id="txt" placeholder="Type what you would say to her..." rows="3"></textarea>
@@ -249,10 +266,7 @@
   </div>
 
   <div id="ph-debrief" class="phase">
-    <div id="debrief-loading" class="loading-debrief" style="display:none">
-      <div class="spinner"></div>
-      Analysing your conversation...
-    </div>
+    <div id="debrief-loading" class="loading-debrief" style="display:none"><div class="spinner"></div>Analysing your conversation...</div>
     <div id="debrief-content">
       <div class="debrief-score">
         <div class="score-ring"><div class="num" id="fscore">-</div><div class="lbl" id="fscore-lbl">score</div></div>
@@ -265,267 +279,249 @@
       <div class="arow">
         <button onclick="showDashboard()">Dashboard</button>
         <button onclick="replaySession()">Replay</button>
-        <button class="pri" onclick="showSelect()">New session</button>
+        <button class="pri" onclick="showModeSelect()">New session</button>
       </div>
     </div>
   </div>
+
+  <div id="ph-quick" class="phase">
+    <div class="top-bar">
+      <div style="font-size:13px;color:var(--text2)">Quick Mode</div>
+      <span class="top-bar-link" onclick="showModeSelect()">Exit</span>
+    </div>
+    <div class="qm-header">
+      <div class="qm-progress-bar"><div class="qm-progress-fill" id="qm-fill" style="width:10%"></div></div>
+      <div class="qm-meta"><div class="qm-num" id="qm-num">Scenario 1 of 10</div><div class="qm-cat" id="qm-cat"></div></div>
+      <div class="qm-speaker" id="qm-speaker"></div>
+      <div class="qm-quote" id="qm-quote"></div>
+    </div>
+    <div class="qm-prompt">How do you respond?</div>
+    <div class="qm-options" id="qm-options"></div>
+    <div id="qm-fb" style="display:none" class="qm-fb"></div>
+    <div id="qm-next" style="display:none"><button class="btn" onclick="qmNext()">Next Scenario</button></div>
+  </div>
+
+  <div id="ph-qresult" class="phase">
+    <div class="qm-result">
+      <div class="score-ring"><div class="num" id="qr-score">-</div><div class="lbl">/ 10</div></div>
+      <div class="debrief-title" id="qr-title">Quick session complete</div>
+      <div class="debrief-sub" id="qr-sub"></div>
+    </div>
+    <div class="insight"><strong>What you did well</strong><span id="qr-pat"></span></div>
+    <div class="insight"><strong>One thing to practise</strong><span id="qr-carry"></span></div>
+    <div class="arow">
+      <button onclick="showDashboard()">Dashboard</button>
+      <button class="pri" onclick="startQuick()">Play again</button>
+    </div>
+  </div>
 </div>
-
 <script>
-var SC={
-  neglected:{scene:"You've had a busy week. She's been quiet. You're sitting together at home when she turns to you.",opening:"You never really make time for me. I always feel like I'm last on your list."},
-  hurt:{scene:"You made a joke earlier in front of friends. She went quiet after. You're now alone together.",opening:"That thing you said earlier made me feel really stupid in front of everyone."},
-  overwhelmed:{scene:"She's been quiet all evening. You can feel something is off. You ask if she's okay.",opening:"I'm fine. Just tired."},
-  criticism:{scene:"You forgot something important to her again. She's frustrated and finally says something.",opening:"You always do this. You just don't think about how things affect me."},
-  takenforgranted:{scene:"She's been doing everything lately. Tonight something breaks.",opening:"I just feel like everything I do goes completely unnoticed. Like I'm invisible."},
-  jealousy:{scene:"You came home from an evening out with friends. She's been quiet since. Something feels off.",opening:"I'm fine. You had a good time?"},
-  confidence:{scene:"She came home quiet after a difficult day. She sits down and finally says it.",opening:"I just feel like I'm not good enough. Like no matter what I do it's never quite right."},
-  pullingaway:{scene:"She's been different lately, quieter, more distant. Tonight you finally ask.",opening:"I don't know. I've just been in my own head a lot lately."},
-  repair:{scene:"You had a serious argument two days ago. Things were said. You've both been quiet since. Tonight you sit down together.",opening:"I don't even know where to start. I'm still hurt from the other night."},
-  jealousydeep:{scene:"She saw messages on your phone from someone she's always felt uneasy about. She hasn't said anything for hours. Now you're alone.",opening:"I just need you to be honest with me. What is she to you?"},
-  family:{scene:"Your family has been making her feel like an outsider. A comment at dinner tonight was the last straw. She's quiet on the drive home.",opening:"I can't keep doing this. I feel like I'm invisible to the people who are supposed to matter most to you."},
-  workstress:{scene:"You've been putting in long hours for months. Missed dinners, cancelled plans. She's been patient but tonight something broke.",opening:"I feel like I'm in a relationship with your job. Not with you."}
-};
-var DIFF={
-  1:{label:"Gentle",inst:"She is sad but open and forgiving. She responds warmly to even imperfect empathy. She opens up relatively easily."},
-  2:{label:"Guarded",inst:"She is emotionally closed at first. She needs genuine curiosity and validation before she opens up. Defensive responses make her withdraw."},
-  3:{label:"Defended",inst:"She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly."},
-  4:{label:"Breaking point",inst:"She is at the absolute edge. She has been carrying this alone for too long and is on the verge of shutting down completely. She needs to feel heard within the first response or she will close entirely. One defensive, dismissive or explanatory response ends the conversation. This is the highest stakes scenario — only genuine, immediate empathy keeps the door open."}
-};
-
-var myName='You',herName='Her',sel='neglected',diff=1,mode='practice',count=0,scores=[],myReplies=[],herReplies=[],busy=false;
-var lastSel=null,lastDiff=1,lastMode='practice';
-
-function loadNames(){var s=localStorage.getItem('et_names');if(s){var n=JSON.parse(s);myName=n.me||'You';herName=n.her||'Her';return true;}return false;}
-function saveNames(){var me=document.getElementById('myname').value.trim()||'You';var her=document.getElementById('hername').value.trim()||'Her';myName=me;herName=her;localStorage.setItem('et_names',JSON.stringify({me:me,her:her}));showDashboard();}
-function showSetup(){var s=localStorage.getItem('et_names');if(s){var n=JSON.parse(s);document.getElementById('myname').value=n.me||'';document.getElementById('hername').value=n.her||'';}showPhase('ph-setup');}
-function showDashboard(){document.getElementById('dash-name').textContent=myName;loadHistory();showPhase('ph-dashboard');}
-function showSelect(){document.getElementById('input-label').textContent='Your response to '+herName;showPhase('ph-select');}
-
+var SC={neglected:{scene:"You've had a busy week. She's been quiet. You're sitting together at home when she turns to you.",opening:"You never really make time for me. I always feel like I'm last on your list."},hurt:{scene:"You made a joke earlier in front of friends. She went quiet after. You're now alone together.",opening:"That thing you said earlier made me feel really stupid in front of everyone."},overwhelmed:{scene:"She's been quiet all evening. You can feel something is off. You ask if she's okay.",opening:"I'm fine. Just tired."},criticism:{scene:"You forgot something important to her again. She's frustrated and finally says something.",opening:"You always do this. You just don't think about how things affect me."},takenforgranted:{scene:"She's been doing everything lately. Tonight something breaks.",opening:"I just feel like everything I do goes completely unnoticed. Like I'm invisible."},jealousy:{scene:"You came home from an evening out with friends. She's been quiet since. Something feels off.",opening:"I'm fine. You had a good time?"},confidence:{scene:"She came home quiet after a difficult day. She sits down and finally says it.",opening:"I just feel like I'm not good enough. Like no matter what I do it's never quite right."},pullingaway:{scene:"She's been different lately, quieter, more distant. Tonight you finally ask.",opening:"I don't know. I've just been in my own head a lot lately."},repair:{scene:"You had a serious argument two days ago. Things were said. You've both been quiet since. Tonight you sit down together.",opening:"I don't even know where to start. I'm still hurt from the other night."},jealousydeep:{scene:"She saw messages on your phone from someone she's always felt uneasy about. She hasn't said anything for hours. Now you're alone.",opening:"I just need you to be honest with me. What is she to you?"},family:{scene:"Your family has been making her feel like an outsider. A comment at dinner tonight was the last straw. She's quiet on the drive home.",opening:"I can't keep doing this. I feel like I'm invisible to the people who are supposed to matter most to you."},workstress:{scene:"You've been putting in long hours for months. Missed dinners, cancelled plans. She's been patient but tonight something broke.",opening:"I feel like I'm in a relationship with your job. Not with you."}};
+var DIFF={1:{label:"Gentle",inst:"She is sad but open and forgiving. She responds warmly to even imperfect empathy. She opens up relatively easily."},2:{label:"Guarded",inst:"She is emotionally closed at first. She needs genuine curiosity and validation before she opens up. Defensive responses make her withdraw."},3:{label:"Defended",inst:"She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly."},4:{label:"Breaking point",inst:"She is at the absolute edge. She needs to feel heard within the first response or she will close entirely. One defensive response ends the conversation."}};
+var QQ=[{cat:"Workplace",emoji:"Work",speaker:"A close colleague says",quote:"I just got passed over for a promotion I have been working toward for two years. They gave it to someone who has been here half the time I have.",opts:["Well, maybe you need to work on your skills more.","That is rough. At least you still have your job.","I am really sorry that happened. That must be incredibly frustrating after all the effort you put in.","That sounds really painful, especially after two years of dedication. I can only imagine how undervalued you must feel right now. What is going through your mind?"],correct:3,good:"You validated their specific experience, named the emotion, and invited them to share more. That is empathy at its best.",miss:"This response focuses on solutions or minimising. What they needed first was to feel heard."},{cat:"Relationship",emoji:"Relationship",speaker:"Your partner says",quote:"Sometimes I feel like you hear me but you are not really listening. Like you are already thinking about your reply.",opts:["That is not fair, I always listen to you.","You are right, I am sorry. I will try harder.","That sounds really lonely, feeling like you are talking but not really being received. Can you tell me more about when that happens?","I do get distracted sometimes but it is not intentional."],correct:2,good:"You acknowledged the feeling without defending yourself and got curious. That opened the door.",miss:"Defending yourself or promising to do better misses the emotional moment. She needed to feel understood first."},{cat:"Family",emoji:"Family",speaker:"A friend says",quote:"I have been caregiving for my mum with dementia for three years. Some days I wish it would just end, and then I feel horrible for thinking that.",opts:["Have you looked into care facilities?","You are doing an amazing job. She is lucky to have you.","Caregiver burnout is so real. It is okay to have those thoughts, you are only human.","The fact that you shared that tells me how exhausted you must be. Those thoughts do not make you a bad person, they make you human. You deserve support too."],correct:3,good:"You normalised the feeling without judgment and turned attention to their needs. That is deep empathy.",miss:"Offering solutions or praise, however kind, can make someone feel their pain is not being fully seen."},{cat:"Confidence",emoji:"Confidence",speaker:"Your partner says",quote:"I feel like everyone at work thinks I am incompetent. I made a mistake in the meeting today and I just wanted to disappear.",opts:["Everyone makes mistakes, do not be so hard on yourself.","What was the mistake? Maybe it was not as bad as you think.","That sounds really humiliating. Wanting to disappear in a moment like that makes complete sense.","You are brilliant, do not let one bad day define you."],correct:2,good:"You named the feeling precisely and validated it completely. That is what they needed.",miss:"Reassurance and positivity, though well-meaning, can feel dismissive when someone is in pain."},{cat:"Friendship",emoji:"Friendship",speaker:"A close friend says",quote:"I feel like I have been drifting from everyone lately. Like I am showing up to my own life but not really present in it.",opts:["Maybe you need to get out more.","That sounds really hard. What do you think is behind it?","That feeling of drifting from yourself is one of the loneliest things. I am glad you told me. What does it feel like day to day?","You should talk to someone, a therapist might really help."],correct:2,good:"You reflected the feeling beautifully and created space to go deeper. They felt truly seen.",miss:"Jumping to advice or solutions, even thoughtful ones, closes the moment before it is opened."},{cat:"Parenting",emoji:"Parenting",speaker:"Your partner says",quote:"I feel like I am failing as a parent. The kids are always fighting, the house is a mess, and I do not know what I am doing.",opts:["You are not failing, you are doing an amazing job.","Have you tried setting a routine?","That sounds exhausting. Feeling like you are holding everything together and still not getting it right is such a heavy feeling.","Everyone feels like that sometimes. It gets easier."],correct:2,good:"You named the exhaustion and the specific weight they described. That is exactly what empathy sounds like.",miss:"Reassurance and advice, even accurate ones, miss the emotional moment they were sharing."},{cat:"Grief",emoji:"Grief",speaker:"A friend says",quote:"It has been six months since my dad died and I think people expect me to be over it by now. But some days it still hits me out of nowhere.",opts:["Grief has no timeline, you take as long as you need.","Have you thought about joining a support group?","Six months is nothing when it comes to losing a parent. And those waves that come out of nowhere, that is just love with nowhere to go.","You should talk to a therapist, it really helps with grief."],correct:2,good:"You reframed grief as love beautifully and took away the shame of still feeling it. Powerful empathy.",miss:"Advice and reassurance are kind but they can make someone feel rushed or unseen in their grief."},{cat:"Relationship",emoji:"Relationship",speaker:"Your partner says",quote:"I just feel like we are housemates lately. We are in the same space but I feel really disconnected from you.",opts:["I have been so stressed with work, I will make more effort.","That hurts to hear, but I think you are right. I miss us too. What does connection feel like to you when it is good?","We should plan a date night.","I feel like you are always criticising me lately."],correct:1,good:"You absorbed the pain without defending yourself, agreed, and got genuinely curious. That is the whole skill.",miss:"Defending, deflecting, or jumping to a fix misses the vulnerability they just showed you."},{cat:"Work",emoji:"Work",speaker:"A colleague says",quote:"I have been working 60-hour weeks for months and my manager just told me I need to show more commitment. I do not know what else I can give.",opts:["That is so unfair. You should talk to HR.","Maybe try documenting your hours.","That must feel completely demoralising, giving everything and still being told it is not enough.","Some managers are just like that. It is not personal."],correct:2,good:"You named the exact feeling and reflected the injustice they felt. That is deep validation.",miss:"Jumping to solutions, however practical, misses the moment they needed to feel understood."},{cat:"Loneliness",emoji:"Loneliness",speaker:"A friend says",quote:"I have been surrounded by people all week but I have never felt more alone. Does that even make sense?",opts:["That makes total sense. Loneliness is not about being alone, it is about not feeling truly seen. I hear you.","You need to find your people.","Maybe you are just tired and need some rest.","That is called being an introvert, you need time to recharge."],correct:0,good:"You validated immediately, offered a reframe that held meaning, and let them know they were seen. Perfect.",miss:"Labels and advice, even accurate ones, can make someone feel analysed rather than understood."}];
+var myName="You",herName="Her",sel="neglected",diff=1,mode="practice";
+var count=0,scores=[],myReplies=[],herReplies=[],busy=false,lastSel="neglected",lastDiff=1,lastMode="practice";
+var qmIdx=0,qmCorrect=0,qmAnswered=false;
+function loadNames(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);myName=n.me||"You";herName=n.her||"Her";return true;}return false;}
+function saveNames(){var me=document.getElementById("myname").value.trim()||"You";var her=document.getElementById("hername").value.trim()||"Her";myName=me;herName=her;localStorage.setItem("et_names",JSON.stringify({me:me,her:her}));showDashboard();}
+function showSetup(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);document.getElementById("myname").value=n.me||"";document.getElementById("hername").value=n.her||"";}showPhase("ph-setup");}
+function showDashboard(){document.getElementById("dash-name").textContent=myName;loadHistory();showPhase("ph-dashboard");}
+function showModeSelect(){showPhase("ph-mode");}
+function showPhase(id){document.querySelectorAll(".phase").forEach(function(p){p.classList.remove("active");});document.getElementById(id).classList.add("active");window.scrollTo(0,0);}
 function loadHistory(){
-  var history=JSON.parse(localStorage.getItem('et_history')||'[]');
-  var scored=history.filter(function(h){return h.score!==null;});
-  var avg=scored.length?Math.round(scored.reduce(function(a,b){return a+b.score;},0)/scored.length):null;
-  var best=scored.length?Math.max.apply(null,scored.map(function(h){return h.score;})):null;
-  document.getElementById('stat-sessions').textContent=history.length;
-  document.getElementById('stat-avg').textContent=avg!==null?avg:'-';
-  document.getElementById('stat-best').textContent=best!==null?best:'-';
-  var list=document.getElementById('history-list');
-  if(history.length===0){list.innerHTML='<div style="font-size:13px;color:var(--text3);padding:1rem 0">No sessions yet. Start your first one below.</div>';return;}
-  var recent=history.slice(-6).reverse();
-  list.innerHTML=recent.map(function(h){
-    var scoreHtml=h.score!==null?'<div class="hi-score">'+h.score+'</div>':'<div class="hi-score no-score">Immersion</div>';
-    var dl=h.diff===1?'Gentle':h.diff===2?'Guarded':h.diff===3?'Defended':'Breaking point';
-    return '<div class="history-item"><div class="hi-left"><strong>'+h.scenario+'</strong>'+dl+' - '+h.date+'</div>'+scoreHtml+'</div>';
-  }).join('');
+  var h=JSON.parse(localStorage.getItem("et_history")||"[]");
+  var sc=h.filter(function(x){return x.score!==null;});
+  var avg=sc.length?Math.round(sc.reduce(function(a,b){return a+b.score;},0)/sc.length):null;
+  var best=sc.length?Math.max.apply(null,sc.map(function(x){return x.score;})):null;
+  document.getElementById("stat-sessions").textContent=h.length;
+  document.getElementById("stat-avg").textContent=avg!==null?avg:"-";
+  document.getElementById("stat-best").textContent=best!==null?best:"-";
+  var list=document.getElementById("history-list");
+  if(!h.length){list.innerHTML='<div style="font-size:13px;color:var(--text3);padding:1rem 0">No sessions yet. Start your first one below.</div>';return;}
+  var dl={1:"Gentle",2:"Guarded",3:"Defended",4:"Breaking point",0:"Quick"};
+  list.innerHTML=h.slice(-6).reverse().map(function(x){
+    var sc=x.score!==null?'<div class="hi-score">'+x.score+"</div>":'<div class="hi-score no-score">'+(x.mode==="quick"?"Quick":"Immersion")+"</div>";
+    return '<div class="history-item"><div class="hi-left"><strong>'+x.scenario+"</strong>"+(dl[x.diff]||"")+" - "+x.date+"</div>"+sc+"</div>";
+  }).join("");
 }
-
-function saveSession(sName,score){
-  var history=JSON.parse(localStorage.getItem('et_history')||'[]');
-  var now=new Date();var date=now.toLocaleDateString('en-IE',{day:'numeric',month:'short'});
-  history.push({scenario:sName,diff:diff,score:score,date:date,mode:mode});
-  localStorage.setItem('et_history',JSON.stringify(history));
+function saveSession(sName,score,modeO,diffO){
+  var h=JSON.parse(localStorage.getItem("et_history")||"[]");
+  var date=new Date().toLocaleDateString("en-IE",{day:"numeric",month:"short"});
+  h.push({scenario:sName,diff:diffO!==undefined?diffO:diff,score:score,date:date,mode:modeO||mode});
+  localStorage.setItem("et_history",JSON.stringify(h));
 }
-
-function showPhase(id){
-  document.querySelectorAll('.phase').forEach(function(p){p.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-
 function pickChip(el){
-  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel');
-  sel=el.dataset.id;
+  document.querySelectorAll(".chip").forEach(function(c){c.classList.remove("sel");});
+  el.classList.add("sel");sel=el.dataset.id;
   var s=SC[sel];
-  document.getElementById('preview-title').textContent=el.textContent;
-  document.getElementById('preview-scene').textContent=s.scene;
-  document.getElementById('preview-opening').textContent='"'+s.opening+'"';
-  document.getElementById('beginbtn').disabled=false;
-  document.getElementById('beginbtn').textContent='Begin — '+el.textContent;
+  document.getElementById("preview-title").textContent=el.textContent;
+  document.getElementById("preview-scene").textContent=s.scene;
+  document.getElementById("preview-opening").textContent='"'+s.opening+'"';
+  document.getElementById("beginbtn").textContent="Begin - "+el.textContent;
 }
-function pickS(el){
-  document.querySelectorAll('.card[data-id]').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel');sel=el.dataset.id;
-  document.getElementById('beginbtn').disabled=false;
-  document.getElementById('beginbtn').textContent='Begin - '+el.querySelector('.ct').textContent;
+function pickD(el){document.querySelectorAll(".diff-card").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");diff=parseInt(el.dataset.diff);}
+function pickM(el){document.querySelectorAll(".card[data-mode]").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");mode=el.dataset.mode;}
+function startLive(){document.getElementById("input-label").textContent="Your response to "+herName;showPhase("ph-select");}
+function startQuick(){qmIdx=0;qmCorrect=0;qmAnswered=false;showPhase("ph-quick");renderQM();}
+function renderQM(){
+  var q=QQ[qmIdx];
+  document.getElementById("qm-fill").style.width=Math.min(Math.round((qmIdx/QQ.length)*100)+10,100)+"%";
+  document.getElementById("qm-num").textContent="Scenario "+(qmIdx+1)+" of "+QQ.length;
+  document.getElementById("qm-cat").textContent=q.cat;
+  document.getElementById("qm-speaker").textContent=q.speaker+":";
+  document.getElementById("qm-quote").textContent='"'+q.quote+'"';
+  var opts=document.getElementById("qm-options");
+  opts.innerHTML="";
+  q.opts.forEach(function(o,i){
+    var b=document.createElement("button");
+    b.className="qm-option";b.textContent=o;
+    b.onclick=function(){qmAnswer(i,q);};
+    opts.appendChild(b);
+  });
+  document.getElementById("qm-fb").style.display="none";
+  document.getElementById("qm-next").style.display="none";
+  qmAnswered=false;
 }
-function pickD(el){document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');diff=parseInt(el.dataset.diff);}
-function pickM(el){document.querySelectorAll('.card[data-mode]').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');mode=el.dataset.mode;}
-
+function qmAnswer(i,q){
+  if(qmAnswered)return;qmAnswered=true;
+  var opts=document.querySelectorAll(".qm-option");
+  var ok=i===q.correct;
+  opts[i].classList.add(ok?"sel-good":"sel-miss");
+  if(!ok)opts[q.correct].classList.add("reveal");
+  opts.forEach(function(o,j){if(j!==i&&j!==q.correct)o.classList.add("faded");});
+  if(ok)qmCorrect++;
+  var fb=document.getElementById("qm-fb");
+  fb.className="qm-fb "+(ok?"good":"miss");
+  fb.innerHTML='<div class="qf-lbl">'+(ok?"Empathetic":"Not quite")+"</div>"+(ok?q.good:q.miss);
+  fb.style.display="block";
+  if(qmIdx<QQ.length-1){document.getElementById("qm-next").style.display="block";}
+  else{setTimeout(qmFinish,1500);}
+}
+function qmNext(){qmIdx++;renderQM();}
+function qmFinish(){
+  saveSession("Quick Mode",null,"quick",0);
+  var pct=Math.round((qmCorrect/QQ.length)*100);
+  document.getElementById("qr-score").textContent=qmCorrect;
+  document.getElementById("qr-title").textContent=pct>=80?"Excellent empathy!":pct>=60?"Good session":"Keep practising";
+  document.getElementById("qr-sub").textContent=qmCorrect+" of "+QQ.length+" empathetic responses";
+  document.getElementById("qr-pat").textContent=qmCorrect>=7?"You consistently validated feelings before offering solutions.":qmCorrect>=4?"You got it right more than half the time. The key: name the feeling before anything else.":"The instinct to help with solutions is strong. The shift is to feel first, fix second.";
+  document.getElementById("qr-carry").textContent="Before responding, ask: what is this person feeling right now? Name it first. Then everything else.";
+  showPhase("ph-qresult");
+}
 function begin(){
-  if(!sel) return;
   lastSel=sel;lastDiff=diff;lastMode=mode;
   var s=SC[sel];
-  document.getElementById('scene-txt').textContent=s.scene;
-  document.getElementById('chatwin').innerHTML='';
-  document.getElementById('fb-div').innerHTML='';
-  document.getElementById('act-div').innerHTML='';
-  document.getElementById('breath-div').style.display='none';
-  document.getElementById('input-block').style.display='block';
-  document.getElementById('sendbtn').disabled=false;
+  document.getElementById("scene-txt").textContent=s.scene;
+  document.getElementById("chatwin").innerHTML="";
+  document.getElementById("fb-div").innerHTML="";
+  document.getElementById("act-div").innerHTML="";
+  document.getElementById("breath-div").style.display="none";
+  document.getElementById("input-block").style.display="block";
+  document.getElementById("sendbtn").disabled=false;
   count=0;scores=[];myReplies=[];herReplies=[];
-  var bw=document.getElementById('badges');
-  var ml=mode==='practice'?'<div class="badge mode-p">Practice</div>':'<div class="badge mode-i">Immersion</div>';
-  var dl=diff===1?'<div class="badge d1">Gentle</div>':diff===2?'<div class="badge d2">Guarded</div>':diff===3?'<div class="badge d3">Defended</div>':'<div class="badge d4">Breaking point</div>';
-  bw.innerHTML=ml+dl;
-  showPhase('ph-chat');
-  setTimeout(function(){addMsg('her',s.opening);},600);
+  var ml=mode==="practice"?'<div class="badge mode-p">Practice</div>':'<div class="badge mode-i">Immersion</div>';
+  var dlMap={1:'<div class="badge d1">Gentle</div>',2:'<div class="badge d2">Guarded</div>',3:'<div class="badge d3">Defended</div>',4:'<div class="badge d4">Breaking point</div>'};
+  document.getElementById("badges").innerHTML=ml+dlMap[diff];
+  showPhase("ph-chat");
+  setTimeout(function(){addMsg("her",s.opening);},600);
   herReplies.push(s.opening);
 }
-
-function replaySession(){
-  if(!lastSel) return;
-  sel=lastSel;diff=lastDiff;mode=lastMode;
-  begin();
-}
-
+function replaySession(){sel=lastSel;diff=lastDiff;mode=lastMode;begin();}
 function addMsg(who,text){
-  var w=document.getElementById('chatwin');var d=document.createElement('div');d.className='msg '+who;
-  var init=who==='her'?herName.charAt(0).toUpperCase():myName.charAt(0).toUpperCase();
-  d.innerHTML='<div class="avatar '+(who==='her'?'h':'y')+'">'+init+'</div><div class="bubble">'+text+'</div>';
+  var w=document.getElementById("chatwin");var d=document.createElement("div");d.className="msg "+who;
+  var init=who==="her"?herName.charAt(0).toUpperCase():myName.charAt(0).toUpperCase();
+  d.innerHTML='<div class="avatar '+(who==="her"?"h":"y")+'">'+init+'</div><div class="bubble">'+text+"</div>";
   w.appendChild(d);w.scrollTop=w.scrollHeight;
 }
-
 function showTyping(){
-  var w=document.getElementById('chatwin');var d=document.createElement('div');
-  d.className='typing-wrap';d.id='typer';
+  var w=document.getElementById("chatwin");var d=document.createElement("div");
+  d.className="typing-wrap";d.id="typer";
   d.innerHTML='<div class="avatar h">'+herName.charAt(0).toUpperCase()+'</div><div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   w.appendChild(d);w.scrollTop=w.scrollHeight;
 }
-function rmTyping(){var e=document.getElementById('typer');if(e)e.remove();}
-
+function rmTyping(){var e=document.getElementById("typer");if(e)e.remove();}
 async function doSend(){
-  if(busy) return;
-  var ta=document.getElementById('txt');var txt=ta.value.trim();if(!txt) return;
-  busy=true;document.getElementById('sendbtn').disabled=true;
-  document.getElementById('breath-div').style.display='none';
-  document.getElementById('fb-div').innerHTML='';document.getElementById('act-div').innerHTML='';
-  addMsg('you',txt);myReplies.push(txt);ta.value='';count++;showTyping();
-  var s=SC[sel];var d=DIFF[diff];var history='';
-  for(var i=0;i<herReplies.length;i++){
-    history+=herName+': "'+herReplies[i]+'"\n';
-    if(myReplies[i]) history+=myName+': "'+myReplies[i]+'"\n';
-  }
-  var sysPrompt;
-  if(mode==='practice'){
-    sysPrompt='You are running an empathy training simulation. TWO roles:\n\nROLE 1 - '+herName+', a woman in an emotionally charged moment.\nScene: '+s.scene+'\nDifficulty: '+d.label+'. '+d.inst+'\nRespond as '+herName+' - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After '+herName+'s response give brief honest feedback addressing '+myName+' directly.\n\nCRITICAL: Reply ONLY as a raw JSON object. No markdown. No code fences. No backticks. Start your response with { and end with }:\n{"nima":"response","quality":"good|neutral|miss","score":0-100,"feedback":"1-2 sentences","breath":true|false}';
-  } else {
-    sysPrompt='You are '+herName+' in an empathy training simulation.\nScene: '+s.scene+'\nDifficulty: '+d.label+'. '+d.inst+'\nRespond ONLY as '+herName+' - authentically, briefly (1-3 sentences). No coaching, no meta. Plain text only.';
-  }
-  var messages=[];
-  for(var i=0;i<herReplies.length;i++){
-    messages.push({role:'assistant',content:herReplies[i]});
-    if(myReplies[i]) messages.push({role:'user',content:myReplies[i]});
-  }
+  if(busy)return;
+  var ta=document.getElementById("txt");var txt=ta.value.trim();if(!txt)return;
+  busy=true;document.getElementById("sendbtn").disabled=true;
+  document.getElementById("breath-div").style.display="none";
+  document.getElementById("fb-div").innerHTML="";document.getElementById("act-div").innerHTML="";
+  addMsg("you",txt);myReplies.push(txt);ta.value="";count++;showTyping();
+  var s=SC[sel];var d=DIFF[diff];
+  var sys=mode==="practice"?"You are running an empathy training simulation. TWO roles:\n\nROLE 1 - "+herName+", a woman in an emotionally charged moment.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond as "+herName+" - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After "+herName+"s response give brief honest feedback addressing "+myName+" directly.\n\nCRITICAL: Reply ONLY as a raw JSON object. No markdown. No code fences. No backticks. Start with { end with }:\n{\"nima\":\"response\",\"quality\":\"good|neutral|miss\",\"score\":0-100,\"feedback\":\"1-2 sentences\",\"breath\":true|false}":"You are "+herName+" in an empathy training simulation.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond ONLY as "+herName+" - authentically, briefly (1-3 sentences). Plain text only.";
+  var msgs=[];
+  for(var i=0;i<herReplies.length;i++){msgs.push({role:"assistant",content:herReplies[i]});if(myReplies[i])msgs.push({role:"user",content:myReplies[i]});}
   try{
-    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:sysPrompt,messages:messages})});
-    if(!res.ok) throw new Error('API error '+res.status);
+    var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sys,messages:msgs})});
+    if(!res.ok)throw new Error("err");
     var data=await res.json();rmTyping();
-    if(mode==='practice'){
-      var parsed;
-      try{parsed=JSON.parse(data.text.replace(/```[\w]*/g,'').replace(/```/g,'').trim());}
-      catch(e){parsed={nima:"I just need a moment.",quality:"neutral",score:50,feedback:"Keep going.",breath:false};}
-      herReplies.push(parsed.nima);scores.push(parsed.score);
+    if(mode==="practice"){
+      var p;try{p=JSON.parse(data.text.replace(/```[\w]*/g,"").replace(/```/g,"").trim());}catch(e){p={nima:"I just need a moment.",quality:"neutral",score:50,feedback:"Keep going.",breath:false};}
+      herReplies.push(p.nima);scores.push(p.score);
       setTimeout(function(){
-        addMsg('her',parsed.nima);
-        if(parsed.breath) document.getElementById('breath-div').style.display='block';
-        var q=parsed.quality||'neutral';
-        var lbl=q==='good'?'That landed well':q==='neutral'?'Getting there':'Try again';
-        document.getElementById('fb-div').innerHTML='<div class="feedback '+q+'"><strong>'+lbl+'</strong>'+(parsed.feedback||'Keep going.')+'</div>';
-        var act=document.getElementById('act-div');
-        if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See my debrief</button></div>';}
+        addMsg("her",p.nima);
+        if(p.breath)document.getElementById("breath-div").style.display="block";
+        var q=p.quality||"neutral";
+        document.getElementById("fb-div").innerHTML='<div class="feedback '+q+'"><strong>'+(q==="good"?"That landed well":q==="neutral"?"Getting there":"Try again")+"</strong>"+(p.feedback||"Keep going.")+"</div>";
+        var act=document.getElementById("act-div");
+        if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See debrief</button></div>';}
         else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
-        busy=false;document.getElementById('sendbtn').disabled=false;
+        busy=false;document.getElementById("sendbtn").disabled=false;
       },300);
     } else {
       var nt=data.text.trim();herReplies.push(nt);
       setTimeout(function(){
-        addMsg('her',nt);
-        var act=document.getElementById('act-div');
+        addMsg("her",nt);
+        var act=document.getElementById("act-div");
         if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">End conversation</button></div>';}
         else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
-        busy=false;document.getElementById('sendbtn').disabled=false;
+        busy=false;document.getElementById("sendbtn").disabled=false;
       },300);
     }
-  } catch(err){
+  }catch(err){
     rmTyping();
-    document.getElementById('fb-div').innerHTML='<div class="error-msg">Could not reach the AI. Check your connection and try again.</div>';
-    busy=false;document.getElementById('sendbtn').disabled=false;
+    document.getElementById("fb-div").innerHTML='<div class="error-msg">Could not reach the AI. Please try again.</div>';
+    busy=false;document.getElementById("sendbtn").disabled=false;
   }
 }
-
-function doNext(){document.getElementById('act-div').innerHTML='';document.getElementById('fb-div').innerHTML='';document.getElementById('txt').focus();}
-
+function doNext(){document.getElementById("act-div").innerHTML="";document.getElementById("fb-div").innerHTML="";document.getElementById("txt").focus();}
 async function doDebrief(){
   var avg=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):null;
   var dLabel=DIFF[diff].label;
-  var sName=sel?document.querySelector('.card[data-id="'+sel+'"] .ct').textContent:'Session';
-  saveSession(sName,mode==='practice'?avg:null);
-
-  document.getElementById('debrief-loading').style.display='block';
-  document.getElementById('debrief-content').style.display='none';
-  showPhase('ph-debrief');
-
-  var convo='';
-  for(var i=0;i<herReplies.length;i++){
-    convo+=herName+': "'+herReplies[i]+'"\n';
-    if(myReplies[i]) convo+=myName+': "'+myReplies[i]+'"\n';
-  }
-
-  var debriefPrompt='You are an empathy coach analysing a real training conversation.\n\nScenario: '+sName+'\nDifficulty: '+dLabel+'\nMode: '+mode+'\nUser name: '+myName+'\nHer name: '+herName+'\n'+(avg!==null?'Average score: '+avg+'/100\n':'')+'\nConversation:\n'+convo+'\nAnalyse this conversation and respond ONLY as valid JSON, no markdown:\n{"pattern":"2-3 sentences on the specific pattern you noticed in '+myName+'s responses — reference actual things they said","carry":"One concrete specific thing to practice, based on what you saw","moment":"The single best thing '+myName+' said or did in this conversation — quote it briefly and say why it worked","title":"3-4 word session title based on what happened"}';
-
+  var sEl=document.querySelector(".chip.sel");var sName=sEl?sEl.textContent:"Session";
+  saveSession(sName,mode==="practice"?avg:null);
+  document.getElementById("debrief-loading").style.display="block";
+  document.getElementById("debrief-content").style.display="none";
+  showPhase("ph-debrief");
+  var convo="";
+  for(var i=0;i<herReplies.length;i++){convo+=herName+': "'+herReplies[i]+'"\n';if(myReplies[i])convo+=myName+': "'+myReplies[i]+'"\n';}
+  var prompt='Analyse this empathy training conversation.\nScenario: '+sName+'\nDifficulty: '+dLabel+'\nUser: '+myName+'\nHer: '+herName+'\n'+(avg!==null?"Avg score: "+avg+"/100\n":"")+"\nConversation:\n"+convo+'\nCRITICAL: Reply ONLY as a raw JSON object. No markdown. Start with { end with }:\n{"pattern":"2-3 sentences on '+myName+'s specific pattern","carry":"one concrete thing to practise","moment":"the best thing '+myName+' said, quote briefly and explain why","title":"3-4 word session title"}';
   try{
-    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'You are an expert empathy coach. Always respond with valid JSON only, no markdown.',messages:[{role:'user',content:debriefPrompt}]})});
+    var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:"You are an expert empathy coach. Always respond with valid JSON only, no markdown.",messages:[{role:"user",content:prompt}]})});
     var data=await res.json();
-    var parsed;
-    try{parsed=JSON.parse(data.text.replace(/```[\w]*/g,'').replace(/```/g,'').trim());}
-    catch(e){parsed=null;}
-
-    document.getElementById('debrief-loading').style.display='none';
-    document.getElementById('debrief-content').style.display='block';
-
-    if(mode==='immersion'){
-      document.getElementById('fscore').textContent='-';
-      document.getElementById('fscore-lbl').textContent='session';
-    } else {
-      document.getElementById('fscore').textContent=avg;
-      document.getElementById('fscore-lbl').textContent='/ 100';
-    }
-
-    var title=parsed&&parsed.title?parsed.title:(avg>=80?'Excellent session':avg>=60?'Good session':'Keep practising');
-    document.getElementById('d-title').textContent=title;
-    document.getElementById('d-sub').textContent=dLabel+' difficulty'+(mode==='practice'?' - Practice':' - Immersion');
-
-    if(parsed){
-      document.getElementById('d-pat').textContent=parsed.pattern||'Keep building on what you practiced today.';
-      document.getElementById('d-carry').textContent=parsed.carry||'Pause before responding. That moment is where empathy lives.';
-      if(parsed.moment){
-        document.getElementById('d-moment').textContent=parsed.moment;
-        document.getElementById('d-moment-wrap').style.display='block';
-      }
-    } else {
-      document.getElementById('d-pat').textContent='You showed up and practiced. That already matters.';
-      document.getElementById('d-carry').textContent='Pause, breathe, and ask — what is '+herName+' feeling right now?';
-    }
-
-  } catch(err){
-    document.getElementById('debrief-loading').style.display='none';
-    document.getElementById('debrief-content').style.display='block';
-    document.getElementById('fscore').textContent=avg||'-';
-    document.getElementById('fscore-lbl').textContent='/ 100';
-    document.getElementById('d-title').textContent=avg>=80?'Excellent session':avg>=60?'Good session':'Keep practising';
-    document.getElementById('d-sub').textContent=dLabel+' difficulty';
-    document.getElementById('d-pat').textContent='You practiced and that is what matters.';
-    document.getElementById('d-carry').textContent='Keep returning to curiosity over defence.';
+    var p;try{p=JSON.parse(data.text.replace(/```[\w]*/g,"").replace(/```/g,"").trim());}catch(e){p=null;}
+    document.getElementById("debrief-loading").style.display="none";
+    document.getElementById("debrief-content").style.display="block";
+    if(mode==="immersion"){document.getElementById("fscore").textContent="-";document.getElementById("fscore-lbl").textContent="session";}
+    else{document.getElementById("fscore").textContent=avg;document.getElementById("fscore-lbl").textContent="/ 100";}
+    document.getElementById("d-title").textContent=p&&p.title?p.title:(avg>=80?"Excellent session":avg>=60?"Good session":"Keep practising");
+    document.getElementById("d-sub").textContent=dLabel+" difficulty"+(mode==="practice"?" - Practice":" - Immersion");
+    document.getElementById("d-pat").textContent=p?p.pattern||"You showed up and practised.":"You showed up and practised.";
+    document.getElementById("d-carry").textContent=p?p.carry||"Pause before responding.":"Pause before responding.";
+    if(p&&p.moment){document.getElementById("d-moment").textContent=p.moment;document.getElementById("d-moment-wrap").style.display="block";}
+  }catch(err){
+    document.getElementById("debrief-loading").style.display="none";
+    document.getElementById("debrief-content").style.display="block";
+    document.getElementById("fscore").textContent=avg||"-";document.getElementById("fscore-lbl").textContent="/ 100";
+    document.getElementById("d-title").textContent=avg>=80?"Excellent session":avg>=60?"Good session":"Keep practising";
+    document.getElementById("d-sub").textContent=dLabel+" difficulty";
+    document.getElementById("d-pat").textContent="You practised and that is what matters.";
+    document.getElementById("d-carry").textContent="Keep returning to curiosity over defence.";
   }
 }
-
-if(loadNames()){showDashboard();}else{showPhase('ph-setup');}
-// Init preview card with first scenario
 (function(){
-  var first=document.querySelector('.chip.sel');
-  if(first) pickChip(first);
+  if(loadNames()){showDashboard();}else{showPhase("ph-setup");}
+  var first=document.querySelector(".chip.sel");if(first)pickChip(first);
 })();
 </script>
 </body>
