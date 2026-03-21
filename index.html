@@ -85,8 +85,8 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
 .avatar.h{background:#EDE9FE;color:#5B21B6;}.avatar.y{background:var(--accent-light);color:var(--accent);}
 .bubble{max-width:76%;padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.65;}
-.msg.her .bubble{background:var(--her-bg);color:var(--text);border-bottom-left-radius:4px;}
-.msg.you .bubble{background:var(--you-bg);color:var(--you-text);border-bottom-right-radius:4px;}
+.msg.her .bubble{background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px;}
+.msg.you .bubble{background:var(--accent);color:white;border-bottom-right-radius:4px;}
 .typing-wrap{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
 .typing-bubble{display:flex;align-items:center;gap:5px;padding:11px 16px;background:var(--her-bg);border-radius:18px;border-bottom-left-radius:4px;}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite;}
@@ -99,11 +99,23 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .input-area textarea:focus{outline:none;border-color:var(--accent);}
 .send-btn{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:var(--radius-xs);font-size:14px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;margin-top:10px;transition:all 0.2s;}
 .send-btn:hover{background:var(--accent-dark);}.send-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.feedback{border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem;font-size:13px;line-height:1.7;animation:fadeUp 0.3s ease;}
-.feedback strong{display:block;font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
-.feedback.good{background:var(--good);border-left:3px solid var(--good-b);color:var(--good-t);}
-.feedback.neutral{background:var(--neutral);border-left:3px solid var(--neutral-b);color:var(--neutral-t);}
-.feedback.miss{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);}
+.feedback{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:1rem;font-size:13px;line-height:1.7;animation:fadeUp 0.3s ease;}
+.fb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.fb-title{font-size:13px;font-weight:700;color:var(--text);}
+.fb-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.fb-badge.good{background:var(--good);color:var(--good-t);}
+.fb-badge.neutral{background:var(--neutral);color:var(--neutral-t);}
+.fb-badge.miss{background:var(--miss);color:var(--miss-t);}
+.fb-bar-wrap{margin-bottom:14px;}
+.fb-bar-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.fb-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.fb-bar-fill{height:100%;border-radius:3px;transition:width 0.6s ease;}
+.fb-bar-fill.good{background:var(--good-b);}
+.fb-bar-fill.neutral{background:var(--neutral-b);}
+.fb-bar-fill.miss{background:var(--miss-b);}
+.fb-text{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+.fb-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.fb-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;background:var(--accent-light);color:var(--accent);}
 .error-msg{background:var(--miss);border-left:3px solid var(--miss-b);color:var(--miss-t);padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:1rem;}
 .arow{display:flex;gap:8px;margin-top:1rem;}
 .arow button{flex:1;padding:12px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text);transition:all 0.15s;}
@@ -474,10 +486,13 @@ async function doSend(){
           addMsg("her",p.her);
           if(p.breath)document.getElementById("breath-div").style.display="block";
           var q=p.quality||"neutral";
-          document.getElementById("fb-div").innerHTML='<div class="feedback '+q+'"><strong>'+(q==="good"?"That landed well":q==="neutral"?"Getting there":"Try again")+"</strong>"+(p.feedback||"Keep going.")+"</div>";
+          var qlabel=q==="good"?"That landed well":q==="neutral"?"Getting there":"Try again";
+          var barW=q==="good"?Math.max(65,p.score||75):q==="neutral"?Math.max(35,Math.min(60,p.score||45)):Math.min(35,p.score||25);
+          var tags=q==="good"?["Validation","Curiosity"]:q==="neutral"?["Emotion naming"]:["Try validation"];
+          document.getElementById("fb-div").innerHTML='<div class="feedback"><div class="fb-header"><div class="fb-title">Your Empathy Analysis</div><div class="fb-badge '+q+'">'+qlabel+'</div></div><div class="fb-bar-wrap"><div class="fb-bar-label">Empathy level</div><div class="fb-bar"><div class="fb-bar-fill '+q+'" style="width:'+barW+'%"></div></div></div><div class="fb-text">'+(p.feedback||"Keep going.")+'</div><div class="fb-tags">'+tags.map(function(t){return'<span class="fb-tag">'+t+"</span>";}).join("")+"</div></div>";
           var act=document.getElementById("act-div");
-          if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See debrief</button></div>';}
-          else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
+          if(count>=3){act.innerHTML='<div class="arow"><button onclick="doRetry()">Retry</button><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See debrief</button></div>';}
+          else{act.innerHTML='<div class="arow"><button onclick="doRetry()">Retry</button><button class="pri" onclick="doNext()">Continue</button></div>';}
           busy=false;document.getElementById("sendbtn").disabled=false;
         },300);
       } else {
@@ -504,6 +519,7 @@ async function doSend(){
   attemptSend();
 }
 function doNext(){document.getElementById("act-div").innerHTML="";document.getElementById("fb-div").innerHTML="";document.getElementById("txt").focus();}
+function doRetry(){myReplies.pop();herReplies.pop();if(scores.length)scores.pop();count--;document.getElementById("act-div").innerHTML="";document.getElementById("fb-div").innerHTML="";document.getElementById("txt").value="";document.getElementById("txt").focus();}
 async function doDebrief(){
   var avg=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):null;
   var dLabel=DIFF[diff].label;
