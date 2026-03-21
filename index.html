@@ -36,11 +36,15 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .diff-card.d2.sel{border-color:#D97706;background:#FFFBEB;}
 .diff-card.d3.sel{border-color:#E11D48;background:#FFF1F2;}
 .diff-card.d4.sel{border-color:#7C3AED;background:#F3E8FF;}
-.chip-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.chip-row::-webkit-scrollbar{display:none;}
-.chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border);color:var(--text2);background:var(--surface);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
-.chip:hover{border-color:var(--accent-mid);color:var(--accent);}
-.chip.sel{background:var(--accent);color:white;border-color:var(--accent);}
+.sc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1.25rem;}
+.sc-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 12px 12px;cursor:pointer;transition:all 0.18s;text-align:left;}
+.sc-card:hover{border-color:var(--accent-mid);box-shadow:0 4px 12px rgba(124,58,237,0.08);transform:translateY(-1px);}
+.sc-card.sel{border-color:var(--accent);background:var(--accent-light);box-shadow:0 4px 16px rgba(124,58,237,0.15);}
+.sc-icon{font-size:22px;margin-bottom:8px;display:block;line-height:1;}
+.sc-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3;}
+.sc-desc{font-size:11px;color:var(--text2);line-height:1.35;}
+.sc-card.sel .sc-title{color:var(--accent-dark);}
+.sc-card.sel .sc-desc{color:var(--accent-mid);}
 .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;animation:fadeUp 0.2s ease;}
 .preview-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .preview-scene{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
@@ -140,7 +144,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 @keyframes bounce{0%,60%,100%{transform:none;}30%{transform:translateY(-5px);}}
 @keyframes spin{to{transform:rotate(360deg);}}
-@media(max-width:500px){
+@media(max-width:500px){.sc-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
   .app{padding:1.25rem 0.9rem 4rem;}
   .logo h1{font-size:30px;}
   .mode-grid{grid-template-columns:1fr;}
@@ -215,19 +219,19 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
       <span class="top-bar-link" onclick="showModeSelect()">Back</span>
     </div>
     <div class="slabel">Choose a scenario</div>
-    <div class="chip-row">
-      <div class="chip sel" data-id="neglected" onclick="pickChip(this)">Neglected</div>
-      <div class="chip" data-id="hurt" onclick="pickChip(this)">Hurt</div>
-      <div class="chip" data-id="overwhelmed" onclick="pickChip(this)">Closed off</div>
-      <div class="chip" data-id="criticism" onclick="pickChip(this)">Criticism</div>
-      <div class="chip" data-id="takenforgranted" onclick="pickChip(this)">Invisible</div>
-      <div class="chip" data-id="jealousy" onclick="pickChip(this)">Jealousy</div>
-      <div class="chip" data-id="confidence" onclick="pickChip(this)">Confidence</div>
-      <div class="chip" data-id="pullingaway" onclick="pickChip(this)">Pulling away</div>
-      <div class="chip" data-id="repair" onclick="pickChip(this)">Repair</div>
-      <div class="chip" data-id="jealousydeep" onclick="pickChip(this)">Deep jealousy</div>
-      <div class="chip" data-id="family" onclick="pickChip(this)">Family</div>
-      <div class="chip" data-id="workstress" onclick="pickChip(this)">Work</div>
+    <div class="sc-grid">
+      <div class="sc-card sel" data-id="neglected" onclick="pickChip(this)"><span class="sc-icon">💔</span><div class="sc-title">Feeling neglected</div><div class="sc-desc">She says you never make time</div></div>
+      <div class="sc-card" data-id="hurt" onclick="pickChip(this)"><span class="sc-icon">😔</span><div class="sc-title">Something you said</div><div class="sc-desc">She felt hurt or embarrassed</div></div>
+      <div class="sc-card" data-id="overwhelmed" onclick="pickChip(this)"><span class="sc-icon">😶</span><div class="sc-title">Closed off</div><div class="sc-desc">She's distant, says "I'm fine"</div></div>
+      <div class="sc-card" data-id="criticism" onclick="pickChip(this)"><span class="sc-icon">⚡</span><div class="sc-title">Direct criticism</div><div class="sc-desc">She says you always do this</div></div>
+      <div class="sc-card" data-id="takenforgranted" onclick="pickChip(this)"><span class="sc-icon">👻</span><div class="sc-title">Invisible</div><div class="sc-desc">She feels unappreciated</div></div>
+      <div class="sc-card" data-id="jealousy" onclick="pickChip(this)"><span class="sc-icon">👀</span><div class="sc-title">Jealousy</div><div class="sc-desc">Something feels off tonight</div></div>
+      <div class="sc-card" data-id="confidence" onclick="pickChip(this)"><span class="sc-icon">🌧️</span><div class="sc-title">Confidence</div><div class="sc-desc">She's doubting herself deeply</div></div>
+      <div class="sc-card" data-id="pullingaway" onclick="pickChip(this)"><span class="sc-icon">🌊</span><div class="sc-title">Pulling away</div><div class="sc-desc">She's distant, you don't know why</div></div>
+      <div class="sc-card" data-id="repair" onclick="pickChip(this)"><span class="sc-icon">🌱</span><div class="sc-title">Repair</div><div class="sc-desc">After a big argument</div></div>
+      <div class="sc-card" data-id="jealousydeep" onclick="pickChip(this)"><span class="sc-icon">🔥</span><div class="sc-title">Deep jealousy</div><div class="sc-desc">She's hurt by someone close</div></div>
+      <div class="sc-card" data-id="family" onclick="pickChip(this)"><span class="sc-icon">🏠</span><div class="sc-title">Family pressure</div><div class="sc-desc">Your family is affecting her</div></div>
+      <div class="sc-card" data-id="workstress" onclick="pickChip(this)"><span class="sc-icon">💼</span><div class="sc-title">Work & ambition</div><div class="sc-desc">She feels second to your career</div></div>
     </div>
     <div class="preview-card">
       <div class="preview-title" id="preview-title">Feeling neglected</div>
@@ -351,13 +355,14 @@ function saveSession(sName,score,modeO,diffO){
   localStorage.setItem("et_history",JSON.stringify(h));
 }
 function pickChip(el){
-  document.querySelectorAll(".chip").forEach(function(c){c.classList.remove("sel");});
+  document.querySelectorAll(".sc-card").forEach(function(c){c.classList.remove("sel");});
   el.classList.add("sel");sel=el.dataset.id;
   var s=SC[sel];
-  document.getElementById("preview-title").textContent=el.textContent;
+  var title=el.querySelector(".sc-title")?el.querySelector(".sc-title").textContent:el.textContent;
+  document.getElementById("preview-title").textContent=title;
   document.getElementById("preview-scene").textContent=s.scene;
   document.getElementById("preview-opening").textContent='"'+s.opening+'"';
-  document.getElementById("beginbtn").textContent="Begin - "+el.textContent;
+  document.getElementById("beginbtn").textContent="Begin — "+title;
 }
 function pickD(el){document.querySelectorAll(".diff-card").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");diff=parseInt(el.dataset.diff);}
 function pickM(el){document.querySelectorAll(".card[data-mode]").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");mode=el.dataset.mode;}
@@ -502,7 +507,7 @@ function doNext(){document.getElementById("act-div").innerHTML="";document.getEl
 async function doDebrief(){
   var avg=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):null;
   var dLabel=DIFF[diff].label;
-  var sEl=document.querySelector(".chip.sel");var sName=sEl?sEl.textContent:"Session";
+  var sEl=document.querySelector(".sc-card.sel");var sName=sEl&&sEl.querySelector(".sc-title")?sEl.querySelector(".sc-title").textContent:"Session";
   saveSession(sName,mode==="practice"?avg:null);
   document.getElementById("debrief-loading").style.display="block";
   document.getElementById("debrief-content").style.display="none";
@@ -535,7 +540,7 @@ async function doDebrief(){
 }
 (function(){
   if(loadNames()){showDashboard();}else{showPhase("ph-setup");}
-  var first=document.querySelector(".chip.sel");if(first)pickChip(first);
+  var first=document.querySelector(".sc-card.sel");if(first)pickChip(first);
 })();
 </script>
 </body>
