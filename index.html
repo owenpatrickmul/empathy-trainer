@@ -448,41 +448,55 @@ async function doSend(){
   document.getElementById("fb-div").innerHTML="";document.getElementById("act-div").innerHTML="";
   addMsg("you",txt);myReplies.push(txt);ta.value="";count++;showTyping();
   var s=SC[sel];var d=DIFF[diff];
-  var sys=mode==="practice"?"You are running an empathy training simulation. TWO roles:\n\nROLE 1 - "+herName+", a woman in an emotionally charged moment.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond as "+herName+" - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After "+herName+"s response give brief honest feedback addressing "+myName+" directly.\n\nCRITICAL: Reply ONLY as a raw JSON object. No markdown. No code fences. No backticks. Start with { end with }:\n{\"nima\":\"response\",\"quality\":\"good|neutral|miss\",\"score\":0-100,\"feedback\":\"1-2 sentences\",\"breath\":true|false}":"You are "+herName+" in an empathy training simulation.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond ONLY as "+herName+" - authentically, briefly (1-3 sentences). Plain text only.";
+  var sys=mode==="practice"?"You are running an empathy training simulation. TWO roles:\n\nROLE 1 - "+herName+", a woman in an emotionally charged moment.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond as "+herName+" - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After "+herName+"s response give brief honest feedback addressing "+myName+" directly.\n\nCRITICAL: Your entire response must be a single raw JSON object. No markdown. No code fences. No backticks. No extra text before or after. Start your response with { and end with }. Use exactly these keys:\n{\"her\":\"her response here\",\"quality\":\"good or neutral or miss\",\"score\":50,\"feedback\":\"1-2 sentences of coaching\",\"breath\":false}":"You are "+herName+" in an empathy training simulation.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond ONLY as "+herName+" - authentically, briefly (1-3 sentences). Plain text only.";
   var msgs=[];
   for(var i=0;i<herReplies.length;i++){msgs.push({role:"assistant",content:herReplies[i]});if(myReplies[i])msgs.push({role:"user",content:myReplies[i]});}
-  try{
-    var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sys,messages:msgs})});
-    if(!res.ok)throw new Error("err");
-    var data=await res.json();rmTyping();
-    if(mode==="practice"){
-      var p;try{p=JSON.parse(data.text.replace(/```[\w]*/g,"").replace(/```/g,"").trim());}catch(e){p={nima:"I just need a moment.",quality:"neutral",score:50,feedback:"Keep going.",breath:false};}
-      herReplies.push(p.nima);scores.push(p.score);
-      setTimeout(function(){
-        addMsg("her",p.nima);
-        if(p.breath)document.getElementById("breath-div").style.display="block";
-        var q=p.quality||"neutral";
-        document.getElementById("fb-div").innerHTML='<div class="feedback '+q+'"><strong>'+(q==="good"?"That landed well":q==="neutral"?"Getting there":"Try again")+"</strong>"+(p.feedback||"Keep going.")+"</div>";
-        var act=document.getElementById("act-div");
-        if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See debrief</button></div>';}
-        else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
+  var maxAttempts=3;var attempt=0;
+  async function attemptSend(){
+    try{
+      var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sys,messages:msgs})});
+      if(!res.ok)throw new Error("err "+res.status);
+      var data=await res.json();rmTyping();
+      if(mode==="practice"){
+        var p;try{
+          var cleaned=data.text.replace(/```[\w]*/g,"").replace(/```/g,"").trim();
+          p=JSON.parse(cleaned);
+          if(!p.her&&p.nima){p.her=p.nima;}
+          if(!p.her){p.her="I just need a moment.";}
+        }catch(e){p={her:"I just need a moment.",quality:"neutral",score:50,feedback:"Keep going.",breath:false};}
+        herReplies.push(p.her);scores.push(p.score||50);
+        setTimeout(function(){
+          addMsg("her",p.her);
+          if(p.breath)document.getElementById("breath-div").style.display="block";
+          var q=p.quality||"neutral";
+          document.getElementById("fb-div").innerHTML='<div class="feedback '+q+'"><strong>'+(q==="good"?"That landed well":q==="neutral"?"Getting there":"Try again")+"</strong>"+(p.feedback||"Keep going.")+"</div>";
+          var act=document.getElementById("act-div");
+          if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">See debrief</button></div>';}
+          else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
+          busy=false;document.getElementById("sendbtn").disabled=false;
+        },300);
+      } else {
+        var nt=data.text.trim();herReplies.push(nt);
+        setTimeout(function(){
+          addMsg("her",nt);
+          var act=document.getElementById("act-div");
+          if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">End conversation</button></div>';}
+          else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
+          busy=false;document.getElementById("sendbtn").disabled=false;
+        },300);
+      }
+    }catch(err){
+      attempt++;
+      if(attempt<maxAttempts){
+        setTimeout(attemptSend, 2000);
+      } else {
+        rmTyping();
+        document.getElementById("fb-div").innerHTML='<div class="error-msg">Could not reach the AI. Please try again.</div>';
         busy=false;document.getElementById("sendbtn").disabled=false;
-      },300);
-    } else {
-      var nt=data.text.trim();herReplies.push(nt);
-      setTimeout(function(){
-        addMsg("her",nt);
-        var act=document.getElementById("act-div");
-        if(count>=3){act.innerHTML='<div class="arow"><button onclick="doNext()">Keep going</button><button class="pri" onclick="doDebrief()">End conversation</button></div>';}
-        else{act.innerHTML='<div class="arow"><button onclick="doNext()">Continue</button></div>';}
-        busy=false;document.getElementById("sendbtn").disabled=false;
-      },300);
+      }
     }
-  }catch(err){
-    rmTyping();
-    document.getElementById("fb-div").innerHTML='<div class="error-msg">Could not reach the AI. Please try again.</div>';
-    busy=false;document.getElementById("sendbtn").disabled=false;
   }
+  attemptSend();
 }
 function doNext(){document.getElementById("act-div").innerHTML="";document.getElementById("fb-div").innerHTML="";document.getElementById("txt").focus();}
 async function doDebrief(){
