@@ -230,8 +230,8 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 
   <div id="ph-mode" class="phase">
     <div class="top-bar">
-      <div style="font-size:13px;color:var(--text2)">New session</div>
-      <span class="top-bar-link" onclick="showDashboard()">Back</span>
+      <div style="font-size:13px;font-weight:600;color:var(--text)">Hi <span id="mode-name"></span></div>
+      <span class="top-bar-link" onclick="showDashboard()">History</span>
     </div>
     <div class="slabel">How do you want to practise?</div>
     <div class="mode-grid">
@@ -257,7 +257,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
       <span class="top-bar-link" onclick="showModeSelect()">Back</span>
     </div>
     <div class="slabel">Choose a scenario</div>
-    <div class="sc-grid">
+    <div class="sc-grid" id="sc-grid">
       <div class="sc-card sel" data-id="neglected" onclick="pickChip(this)"><span class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg></span><div class="sc-title">Feeling neglected</div><div class="sc-desc">She says you never make time</div></div>
       <div class="sc-card" data-id="hurt" onclick="pickChip(this)"><span class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span><div class="sc-title">Something you said</div><div class="sc-desc">She felt hurt or embarrassed</div></div>
       <div class="sc-card" data-id="overwhelmed" onclick="pickChip(this)"><span class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div class="sc-title">Closed off</div><div class="sc-desc">She's distant, says "I'm fine"</div></div>
@@ -367,6 +367,49 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 </div>
 <script>
 var SC={neglected:{scene:"You've had a busy week. She's been quiet. You're sitting together at home when she turns to you.",opening:"You never really make time for me. I always feel like I'm last on your list."},hurt:{scene:"You made a joke earlier in front of friends. She went quiet after. You're now alone together.",opening:"That thing you said earlier made me feel really stupid in front of everyone."},overwhelmed:{scene:"She's been quiet all evening. You can feel something is off. You ask if she's okay.",opening:"I'm fine. Just tired."},criticism:{scene:"You forgot something important to her again. She's frustrated and finally says something.",opening:"You always do this. You just don't think about how things affect me."},takenforgranted:{scene:"She's been doing everything lately. Tonight something breaks.",opening:"I just feel like everything I do goes completely unnoticed. Like I'm invisible."},jealousy:{scene:"You came home from an evening out with friends. She's been quiet since. Something feels off.",opening:"I'm fine. You had a good time?"},confidence:{scene:"She came home quiet after a difficult day. She sits down and finally says it.",opening:"I just feel like I'm not good enough. Like no matter what I do it's never quite right."},pullingaway:{scene:"She's been different lately, quieter, more distant. Tonight you finally ask.",opening:"I don't know. I've just been in my own head a lot lately."},repair:{scene:"You had a serious argument two days ago. Things were said. You've both been quiet since. Tonight you sit down together.",opening:"I don't even know where to start. I'm still hurt from the other night."},jealousydeep:{scene:"She saw messages on your phone from someone she's always felt uneasy about. She hasn't said anything for hours. Now you're alone.",opening:"I just need you to be honest with me. What is she to you?"},family:{scene:"Your family has been making her feel like an outsider. A comment at dinner tonight was the last straw. She's quiet on the drive home.",opening:"I can't keep doing this. I feel like I'm invisible to the people who are supposed to matter most to you."},workstress:{scene:"You've been putting in long hours for months. Missed dinners, cancelled plans. She's been patient but tonight something broke.",opening:"I feel like I'm in a relationship with your job. Not with you."}};
+
+var SC_FRIEND={
+  distant:{scene:"Your close friend has been quieter than usual. You've noticed fewer messages, cancelled plans. Tonight you finally ask.",opening:"I don't know, I've just been in my own head. I'm fine."},
+  hurt:{scene:"Your friend went quiet after something you said in front of a group last week. Tonight you're alone together.",opening:"What you said the other day actually really hurt. I don't think you realised."},
+  overwhelmed:{scene:"Your friend has been dealing with a lot. Tonight they finally open up a little.",opening:"I'm just exhausted. Like properly exhausted. I don't even know where to start."},
+  jealousy:{scene:"You got a promotion your friend also went for. They congratulated you but something feels off.",opening:"I'm happy for you, I am. It's just... hard. You know?"},
+  confidence:{scene:"Your friend has been struggling with their self-worth lately. Tonight they finally say it.",opening:"I just feel like everyone else has their life together and I'm still just figuring it out."},
+  grief:{scene:"Your friend lost a parent three months ago. Tonight they seem really low.",opening:"Some days it just hits me out of nowhere. Like I'll be fine and then I'm not."},
+  relationship:{scene:"Your friend's long-term relationship just ended. You're together now.",opening:"I just feel so stupid. I gave everything to that relationship and I don't know who I am without it."},
+  betrayal:{scene:"Your friend found out a mutual friend has been talking about them behind their back.",opening:"I just can't believe they would do that. I trusted them completely."},
+  loneliness:{scene:"Your friend moved to a new city six months ago. They message you late one evening.",opening:"I know I chose this but I've never felt so alone in my life."},
+  pressure:{scene:"Your friend is under enormous family pressure about a life choice they don't want to make.",opening:"I just feel like no matter what I do it will never be enough for them."},
+  comparison:{scene:"Your friend has been comparing themselves to others constantly lately. Tonight it spills out.",opening:"Everyone around me seems to be thriving and I'm just here. Treading water."},
+  burnout:{scene:"Your friend has been working unsustainable hours and finally hits a wall.",opening:"I literally cannot do it anymore. I don't even care about any of it. I just feel empty."}
+};
+var SC_FAMILY={
+  withdrawn:{scene:"Your teenage child has been quiet and withdrawn for weeks. Tonight you sit with them.",opening:"Nothing's wrong. I'm just tired."},
+  pressure:{scene:"Your adult child calls. They've been feeling pressure from you about their life choices.",opening:"I just need you to know that the comments about my job really affect me."},
+  parent_worry:{scene:"Your elderly parent calls, more anxious than usual. Something is clearly weighing on them.",opening:"I just worry I'm becoming a burden. I don't want to be a burden to you."},
+  sibling:{scene:"You and your sibling are talking. Something has been unspoken for years.",opening:"I always felt like I was the difficult one growing up. Like you got the easy version of them."},
+  illness:{scene:"A family member has received a difficult health diagnosis. You're together.",opening:"I'm trying to be strong but honestly I'm scared. I don't know what's coming."},
+  conflict:{scene:"There was a family argument recently. A family member is still hurt.",opening:"I just feel like no one ever takes my side. It's always been like that."},
+  disappointment:{scene:"Your child didn't get something they worked very hard toward.",opening:"I worked so hard. I don't understand what else I was supposed to do."},
+  caregiver:{scene:"A family member has been caring for someone and is clearly burning out.",opening:"I love them but I'm so tired. And then I feel guilty for feeling tired."},
+  unheard:{scene:"A family member feels their opinions are constantly dismissed.",opening:"I just feel like what I think doesn't matter. It never has."},
+  change:{scene:"A family member is going through a major life transition and feeling lost.",opening:"Everything feels so uncertain. I don't recognise my own life."},
+  distance:{scene:"You haven't spoken to a close family member in a while. They reach out.",opening:"I don't even know why I'm calling. I just miss how things used to be."},
+  divorce:{scene:"Your grown child calls after learning something difficult about your family.",opening:"I feel like everything I believed about our family was a lie."}
+};
+var SC_COLLEAGUE={
+  credit:{scene:"A colleague comes to you after a meeting where their contribution was overlooked.",opening:"I don't understand why my work is never acknowledged. Did you notice that in there?"},
+  pressure:{scene:"A colleague is under enormous pressure and finally vents to you.",opening:"I'm honestly at the point where I'm thinking about leaving. I can't keep doing this."},
+  conflict:{scene:"A colleague had a difficult interaction with your shared manager and is visibly upset.",opening:"I feel like I'm being targeted. Am I being paranoid or is this actually happening?"},
+  feedback:{scene:"A colleague received tough feedback in a review and is struggling with it.",opening:"I thought I was doing well. I had no idea they felt that way. I feel humiliated."},
+  imposter:{scene:"A colleague is about to take on a big new role and is full of self-doubt.",opening:"I don't know why they picked me. Someone else would be so much better at this."},
+  redundancy:{scene:"A colleague found out their role is being restructured. They pull you aside.",opening:"I just found out I might be made redundant. I don't know what to do."},
+  invisible:{scene:"A colleague feels overlooked despite consistently doing good work.",opening:"I just feel like I'm invisible here. I work hard and it's like no one sees it."},
+  mistake:{scene:"A colleague made a significant mistake that has had real consequences.",opening:"I can't stop thinking about it. I've let everyone down."},
+  unfair:{scene:"A colleague was passed over for a promotion they deserved.",opening:"They gave it to someone who's been here half the time. I don't understand what I'm doing wrong."},
+  burnout:{scene:"A colleague has clearly been running on empty for months.",opening:"I used to love this job. I don't know when that changed but I just feel nothing now."},
+  isolation:{scene:"A colleague moved to a new team and is struggling to fit in.",opening:"I feel like an outsider here. Everyone has their dynamic and I'm just not part of it."},
+  change:{scene:"A major change has been announced. A colleague is anxious about their future.",opening:"I just don't know where I stand anymore. Everything feels uncertain."}
+};
 var DIFF={1:{label:"Gentle",inst:"She is sad but open and forgiving. She responds warmly to even imperfect empathy. She opens up relatively easily."},2:{label:"Guarded",inst:"She is emotionally closed at first. She needs genuine curiosity and validation before she opens up. Defensive responses make her withdraw."},3:{label:"Defended",inst:"She is hurt and actively pushing back. She deflects empathy at first. One defensive response closes her down significantly."},4:{label:"Breaking point",inst:"She is at the absolute edge. She needs to feel heard within the first response or she will close entirely. One defensive response ends the conversation."}};
 var QQ=[{cat:"Workplace",emoji:"Work",speaker:"A close colleague says",quote:"I just got passed over for a promotion I have been working toward for two years. They gave it to someone who has been here half the time I have.",opts:["Well, maybe you need to work on your skills more.","That is rough. At least you still have your job.","I am really sorry that happened. That must be incredibly frustrating after all the effort you put in.","That sounds really painful, especially after two years of dedication. I can only imagine how undervalued you must feel right now. What is going through your mind?"],correct:3,good:"You validated their specific experience, named the emotion, and invited them to share more. That is empathy at its best.",miss:"This response focuses on solutions or minimising. What they needed first was to feel heard."},{cat:"Relationship",emoji:"Relationship",speaker:"Your partner says",quote:"Sometimes I feel like you hear me but you are not really listening. Like you are already thinking about your reply.",opts:["That is not fair, I always listen to you.","You are right, I am sorry. I will try harder.","That sounds really lonely, feeling like you are talking but not really being received. Can you tell me more about when that happens?","I do get distracted sometimes but it is not intentional."],correct:2,good:"You acknowledged the feeling without defending yourself and got curious. That opened the door.",miss:"Defending yourself or promising to do better misses the emotional moment. She needed to feel understood first."},{cat:"Family",emoji:"Family",speaker:"A friend says",quote:"I have been caregiving for my mum with dementia for three years. Some days I wish it would just end, and then I feel horrible for thinking that.",opts:["Have you looked into care facilities?","You are doing an amazing job. She is lucky to have you.","Caregiver burnout is so real. It is okay to have those thoughts, you are only human.","The fact that you shared that tells me how exhausted you must be. Those thoughts do not make you a bad person, they make you human. You deserve support too."],correct:3,good:"You normalised the feeling without judgment and turned attention to their needs. That is deep empathy.",miss:"Offering solutions or praise, however kind, can make someone feel their pain is not being fully seen."},{cat:"Confidence",emoji:"Confidence",speaker:"Your partner says",quote:"I feel like everyone at work thinks I am incompetent. I made a mistake in the meeting today and I just wanted to disappear.",opts:["Everyone makes mistakes, do not be so hard on yourself.","What was the mistake? Maybe it was not as bad as you think.","That sounds really humiliating. Wanting to disappear in a moment like that makes complete sense.","You are brilliant, do not let one bad day define you."],correct:2,good:"You named the feeling precisely and validated it completely. That is what they needed.",miss:"Reassurance and positivity, though well-meaning, can feel dismissive when someone is in pain."},{cat:"Friendship",emoji:"Friendship",speaker:"A close friend says",quote:"I feel like I have been drifting from everyone lately. Like I am showing up to my own life but not really present in it.",opts:["Maybe you need to get out more.","That sounds really hard. What do you think is behind it?","That feeling of drifting from yourself is one of the loneliest things. I am glad you told me. What does it feel like day to day?","You should talk to someone, a therapist might really help."],correct:2,good:"You reflected the feeling beautifully and created space to go deeper. They felt truly seen.",miss:"Jumping to advice or solutions, even thoughtful ones, closes the moment before it is opened."},{cat:"Parenting",emoji:"Parenting",speaker:"Your partner says",quote:"I feel like I am failing as a parent. The kids are always fighting, the house is a mess, and I do not know what I am doing.",opts:["You are not failing, you are doing an amazing job.","Have you tried setting a routine?","That sounds exhausting. Feeling like you are holding everything together and still not getting it right is such a heavy feeling.","Everyone feels like that sometimes. It gets easier."],correct:2,good:"You named the exhaustion and the specific weight they described. That is exactly what empathy sounds like.",miss:"Reassurance and advice, even accurate ones, miss the emotional moment they were sharing."},{cat:"Grief",emoji:"Grief",speaker:"A friend says",quote:"It has been six months since my dad died and I think people expect me to be over it by now. But some days it still hits me out of nowhere.",opts:["Grief has no timeline, you take as long as you need.","Have you thought about joining a support group?","Six months is nothing when it comes to losing a parent. And those waves that come out of nowhere, that is just love with nowhere to go.","You should talk to a therapist, it really helps with grief."],correct:2,good:"You reframed grief as love beautifully and took away the shame of still feeling it. Powerful empathy.",miss:"Advice and reassurance are kind but they can make someone feel rushed or unseen in their grief."},{cat:"Relationship",emoji:"Relationship",speaker:"Your partner says",quote:"I just feel like we are housemates lately. We are in the same space but I feel really disconnected from you.",opts:["I have been so stressed with work, I will make more effort.","That hurts to hear, but I think you are right. I miss us too. What does connection feel like to you when it is good?","We should plan a date night.","I feel like you are always criticising me lately."],correct:1,good:"You absorbed the pain without defending yourself, agreed, and got genuinely curious. That is the whole skill.",miss:"Defending, deflecting, or jumping to a fix misses the vulnerability they just showed you."},{cat:"Work",emoji:"Work",speaker:"A colleague says",quote:"I have been working 60-hour weeks for months and my manager just told me I need to show more commitment. I do not know what else I can give.",opts:["That is so unfair. You should talk to HR.","Maybe try documenting your hours.","That must feel completely demoralising, giving everything and still being told it is not enough.","Some managers are just like that. It is not personal."],correct:2,good:"You named the exact feeling and reflected the injustice they felt. That is deep validation.",miss:"Jumping to solutions, however practical, misses the moment they needed to feel understood."},{cat:"Loneliness",emoji:"Loneliness",speaker:"A friend says",quote:"I have been surrounded by people all week but I have never felt more alone. Does that even make sense?",opts:["That makes total sense. Loneliness is not about being alone, it is about not feeling truly seen. I hear you.","You need to find your people.","Maybe you are just tired and need some rest.","That is called being an introvert, you need time to recharge."],correct:0,good:"You validated immediately, offered a reframe that held meaning, and let them know they were seen. Perfect.",miss:"Labels and advice, even accurate ones, can make someone feel analysed rather than understood."},
 {cat:"Relationship",emoji:"Relationship",speaker:"Your partner says",quote:"I feel like I always have to be strong. I never feel like I can fall apart around you without worrying about how it affects you.",opts:["I am always here for you, you can talk to me anytime.","That is not fair, I am very supportive.","That sounds exhausting, carrying that all the time. I want to be someone you can fall apart with. What would that look like for you?","You should try therapy, it really helps."],correct:2,good:"You named the exhaustion, expressed real willingness, and got curious about what she actually needs. That is full empathy.",miss:"Reassurance and deflection miss the core of what she shared — she needs to feel safe falling apart, not managed."},
@@ -384,18 +427,18 @@ var trustLevel=50;
 var qmIdx=0,qmCorrect=0,qmAnswered=false;
 function loadNames(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);myName=n.me||"You";herName=n.her||"Her";audience=n.aud||"partner";return true;}return false;}
 var audience="partner";
+function getScenarios(){return audience==="friend"?SC_FRIEND:audience==="family"?SC_FAMILY:audience==="colleague"?SC_COLLEAGUE:SC;}
 function pickAud(el){
   document.querySelectorAll(".aud-card").forEach(function(c){c.classList.remove("sel");});
   el.classList.add("sel");audience=el.dataset.aud;
   var labels={partner:"Her name",friend:"Their name",family:"Their name",colleague:"Their name"};
-  var placeholders={partner:"Her name",friend:"Their name",family:"Their name",colleague:"Their name"};
   document.getElementById("her-label").textContent=labels[audience]||"Their name";
-  document.getElementById("hername").placeholder=placeholders[audience]||"Their name";
+  document.getElementById("hername").placeholder=labels[audience]||"Their name";
 }
-function saveNames(){var me=document.getElementById("myname").value.trim()||"You";var her=document.getElementById("hername").value.trim()||"Her";myName=me;herName=her;localStorage.setItem("et_names",JSON.stringify({me:me,her:her,aud:audience}));showDashboard();}
+function saveNames(){var me=document.getElementById("myname").value.trim()||"You";var her=document.getElementById("hername").value.trim()||"Her";myName=me;herName=her;localStorage.setItem("et_names",JSON.stringify({me:me,her:her,aud:audience}));showModeSelect();}
 function showSetup(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);document.getElementById("myname").value=n.me||"";document.getElementById("hername").value=n.her||"";}showPhase("ph-setup");}
 function showDashboard(){document.getElementById("dash-name").textContent=myName;loadHistory();showPhase("ph-dashboard");}
-function showModeSelect(){showPhase("ph-mode");}
+function showModeSelect(){var el=document.getElementById("mode-name");if(el)el.textContent=myName;showPhase("ph-mode");}
 function showPhase(id){document.querySelectorAll(".phase").forEach(function(p){p.classList.remove("active");});document.getElementById(id).classList.add("active");window.scrollTo(0,0);}
 function loadHistory(){
   var h=JSON.parse(localStorage.getItem("et_history")||"[]");
@@ -422,7 +465,7 @@ function saveSession(sName,score,modeO,diffO){
 function pickChip(el){
   document.querySelectorAll(".sc-card").forEach(function(c){c.classList.remove("sel");});
   el.classList.add("sel");sel=el.dataset.id;
-  var s=SC[sel];
+  var s=(getScenarios()||SC)[sel]||SC[sel]||SC["neglected"];
   var title=el.querySelector(".sc-title")?el.querySelector(".sc-title").textContent:el.textContent;
   document.getElementById("preview-title").textContent=title;
   document.getElementById("preview-scene").textContent=s.scene;
@@ -431,7 +474,28 @@ function pickChip(el){
 }
 function pickD(el){document.querySelectorAll(".diff-card").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");diff=parseInt(el.dataset.diff);}
 function pickM(el){document.querySelectorAll(".card[data-mode]").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");mode=el.dataset.mode;}
-function startLive(){document.getElementById("input-label").textContent="Your response to "+herName;showPhase("ph-select");}
+function startLive(){
+  document.getElementById("input-label").textContent="Your response to "+herName;
+  var scData=getScenarios();
+  var grid=document.getElementById("sc-grid");
+  if(grid&&scData!==SC){
+    var keys=Object.keys(scData);
+    sel=keys[0];
+    grid.innerHTML=keys.map(function(k,i){
+      var s=scData[k];
+      var title=s.opening.substring(0,50)+(s.opening.length>50?"...":"");
+      var svgIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+      return'<div class="sc-card'+(i===0?" sel":"")+'" data-id="'+k+'" onclick="pickChip(this)"><span class="sc-icon">'+svgIcon+'</span><div class="sc-title">'+k.charAt(0).toUpperCase()+k.slice(1).replace(/_/g," ")+'</div><div class="sc-desc">'+title+'</div></div>';
+    }).join("");
+    var firstEl=grid.querySelector(".sc-card.sel");
+    if(firstEl)pickChip(firstEl);
+  } else if(grid&&scData===SC){
+    grid.innerHTML=grid.innerHTML;
+    var firstSel=grid.querySelector(".sc-card.sel");
+    if(firstSel)pickChip(firstSel);
+  }
+  showPhase("ph-select");
+}
 function startQuick(){
   qmIdx=0;qmCorrect=0;qmAnswered=false;
   var shuffled=QQ.slice().sort(function(){return Math.random()-0.5;});
@@ -498,7 +562,7 @@ function qmFinish(){
 }
 function begin(){
   lastSel=sel;lastDiff=diff;lastMode=mode;
-  var s=SC[sel];
+  var s=(getScenarios()||SC)[sel]||SC[sel]||SC["neglected"];
   document.getElementById("scene-txt").textContent=s.scene;
   document.getElementById("chatwin").innerHTML="";
   document.getElementById("fb-div").innerHTML="";
@@ -535,7 +599,7 @@ async function doSend(){
   document.getElementById("breath-div").style.display="none";
   document.getElementById("fb-div").innerHTML="";document.getElementById("act-div").innerHTML="";
   addMsg("you",txt);myReplies.push(txt);ta.value="";count++;showTyping();
-  var s=SC[sel];var d=DIFF[diff];
+  var s=(getScenarios()||SC)[sel]||SC[sel]||SC["neglected"];var d=DIFF[diff];
   var sys=mode==="practice"?"You are running an empathy training simulation. TWO roles:\n\nROLE 1 - "+herName+", a person in an emotionally charged moment. Relationship to "+myName+": "+audience+".\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond as "+herName+" - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After "+herName+"s response give brief honest feedback addressing "+myName+" directly.\n\nCRITICAL: Your entire response must be a single raw JSON object. No markdown. No code fences. No backticks. No extra text before or after. Start your response with { and end with }. Use exactly these keys:\n{\"her\":\"her response here\",\"quality\":\"good or neutral or miss\",\"score\":50,\"feedback\":\"1-2 sentences of coaching\",\"breath\":false}":"You are "+herName+" in an empathy training simulation.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond ONLY as "+herName+" - authentically, briefly (1-3 sentences). Plain text only.";
   var msgs=[];
   for(var i=0;i<herReplies.length;i++){msgs.push({role:"assistant",content:herReplies[i]});if(myReplies[i])msgs.push({role:"user",content:myReplies[i]});}
@@ -645,7 +709,7 @@ async function doDebrief(){
   }
 }
 (function(){
-  if(loadNames()){showDashboard();}else{showPhase("ph-setup");}
+  if(loadNames()){showModeSelect();}else{showPhase("ph-setup");}
   var first=document.querySelector(".sc-card.sel");if(first)pickChip(first);
 })();
 </script>
