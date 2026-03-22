@@ -10,7 +10,9 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
 .app{max-width:640px;margin:0 auto;padding:2rem 1rem 5rem;}
-.logo{text-align:center;margin-bottom:2rem;}
+.logo{text-align:center;margin-bottom:2rem;position:relative;}
+.reset-link{position:absolute;right:0;top:4px;font-size:12px;color:var(--text3);cursor:pointer;font-weight:500;transition:color 0.15s;}
+.reset-link:hover{color:var(--accent);}
 .logo-badge{display:inline-flex;align-items:center;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:1rem;}
 .logo h1{font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:8px;}
 .logo h1 span{color:var(--accent);}
@@ -45,6 +47,17 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .sc-desc{font-size:11px;color:var(--text2);line-height:1.35;}
 .sc-card.sel .sc-title{color:var(--accent-dark);}
 .sc-card.sel .sc-desc{color:var(--accent-mid);}
+.settings-row{display:flex;gap:16px;margin-top:1.25rem;flex-wrap:wrap;}
+.settings-group{flex:1;min-width:120px;}
+.settings-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;}
+.pill-row{display:flex;gap:5px;flex-wrap:wrap;}
+.pill{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);color:var(--text2);background:var(--surface);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.pill:hover{border-color:var(--accent-mid);color:var(--accent);}
+.pill.d1.sel{border-color:#16A34A;background:#F0FDF4;color:#14532D;}
+.pill.d2.sel{border-color:#D97706;background:#FFFBEB;color:#78350F;}
+.pill.d3.sel{border-color:#E11D48;background:#FFF1F2;color:#881337;}
+.pill.d4.sel{border-color:#7C3AED;background:#F3E8FF;color:#4C1D95;}
+.pill.mode-sel.sel{border-color:var(--accent);background:var(--accent-light);color:var(--accent-dark);}
 .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;animation:fadeUp 0.2s ease;}
 .preview-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .preview-scene{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
@@ -192,6 +205,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 <body>
 <div class="app">
   <div class="logo">
+    <span class="reset-link" onclick="hardReset()" title="Start over">↺ Reset</span>
     <div class="logo-badge">Free · No signup required</div>
     <h1>Train Your <span>Empathy</span></h1>
     <p>Empathy is not just a feeling — it is a skill you can practise.</p>
@@ -276,19 +290,23 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
       <div class="preview-scene" id="preview-scene"></div>
       <div class="preview-opening" id="preview-opening"></div>
     </div>
-    <div class="slabel">Difficulty</div>
-    <div class="grid3">
-      <div class="card diff-card d1 sel" data-diff="1" onclick="pickD(this)"><div class="ct">Gentle</div><div class="cd">Open, forgiving</div></div>
-      <div class="card diff-card d2" data-diff="2" onclick="pickD(this)"><div class="ct">Guarded</div><div class="cd">Closed at first</div></div>
-      <div class="card diff-card d3" data-diff="3" onclick="pickD(this)"><div class="ct">Defended</div><div class="cd">Pushing back</div></div>
-    </div>
-    <div style="margin-top:8px">
-      <div class="card diff-card d4" data-diff="4" onclick="pickD(this)"><div class="ct">Breaking point</div><div class="cd">One wrong move and she stops talking</div></div>
-    </div>
-    <div class="slabel">Mode</div>
-    <div class="mode-grid" style="grid-template-columns:1fr 1fr">
-      <div class="card sel" data-mode="practice" onclick="pickM(this)"><div class="ct">Practice</div><div class="cd">Coaching after every exchange</div></div>
-      <div class="card" data-mode="immersion" onclick="pickM(this)"><div class="ct">Immersion</div><div class="cd">Just you and her</div></div>
+    <div class="settings-row">
+      <div class="settings-group">
+        <div class="settings-label">Difficulty</div>
+        <div class="pill-row">
+          <div class="pill d1 sel" data-diff="1" onclick="pickD(this)">Gentle</div>
+          <div class="pill d2" data-diff="2" onclick="pickD(this)">Guarded</div>
+          <div class="pill d3" data-diff="3" onclick="pickD(this)">Defended</div>
+          <div class="pill d4" data-diff="4" onclick="pickD(this)">Breaking point</div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">Mode</div>
+        <div class="pill-row">
+          <div class="pill mode-sel sel" data-mode="practice" onclick="pickM(this)">Practice</div>
+          <div class="pill mode-sel" data-mode="immersion" onclick="pickM(this)">Immersion</div>
+        </div>
+      </div>
     </div>
     <button class="btn" id="beginbtn" onclick="begin()">Begin</button>
   </div>
@@ -472,8 +490,8 @@ function pickChip(el){
   document.getElementById("preview-opening").textContent='"'+s.opening+'"';
   document.getElementById("beginbtn").textContent="Begin — "+title;
 }
-function pickD(el){document.querySelectorAll(".diff-card").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");diff=parseInt(el.dataset.diff);}
-function pickM(el){document.querySelectorAll(".card[data-mode]").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");mode=el.dataset.mode;}
+function pickD(el){document.querySelectorAll(".pill[data-diff]").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");diff=parseInt(el.dataset.diff);}
+function pickM(el){document.querySelectorAll(".pill[data-mode]").forEach(function(c){c.classList.remove("sel");});el.classList.add("sel");mode=el.dataset.mode;}
 function startLive(){
   document.getElementById("input-label").textContent="Your response to "+herName;
   var scData=getScenarios();
@@ -706,6 +724,12 @@ async function doDebrief(){
     document.getElementById("d-sub").textContent=dLabel+" difficulty";
     document.getElementById("d-pat").textContent="You practised and that is what matters.";
     document.getElementById("d-carry").textContent="Keep returning to curiosity over defence.";
+  }
+}
+function hardReset(){
+  if(confirm("Start over? This will take you back to the beginning.")){
+    localStorage.removeItem("et_names");
+    location.reload();
   }
 }
 (function(){
