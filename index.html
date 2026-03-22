@@ -53,6 +53,13 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .btn:hover{background:var(--accent-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,0.3);}
 .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;}
 .name-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1rem;}
+.audience-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1.25rem;}
+.aud-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:all 0.15s;text-align:left;}
+.aud-card:hover{border-color:var(--accent-mid);}
+.aud-card.sel{border-color:var(--accent);background:var(--accent-light);}
+.aud-card .act{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.aud-card .acd{font-size:11px;color:var(--text2);}
+.aud-card.sel .act{color:var(--accent-dark);}
 .name-card h2{font-size:22px;font-weight:700;margin-bottom:6px;}
 .name-card p{font-size:14px;color:var(--text2);margin-bottom:1.5rem;}
 .field{margin-bottom:1rem;}
@@ -71,6 +78,11 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
 .history-item .hi-left strong{display:block;color:var(--text);font-size:13px;font-weight:600;margin-bottom:2px;}
 .history-item .hi-score{font-size:22px;font-weight:800;color:var(--accent);}
 .history-item .hi-score.no-score{font-size:13px;font-weight:500;color:var(--text3);}
+.trust-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
+.trust-bar-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;flex-shrink:0;}
+.trust-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.trust-bar-fill{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1),background 0.8s ease;}
+.trust-bar-state{font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;transition:color 0.5s ease;}
 .scene-banner{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 16px;margin-bottom:1rem;font-size:13px;color:var(--text2);line-height:1.6;}
 .scene-banner strong{display:block;font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
 .badges{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
@@ -188,9 +200,15 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
   <div id="ph-setup" class="phase active">
     <div class="name-card">
       <h2>Welcome</h2>
-      <p>Enter your name and your partner's name to personalise your sessions.</p>
+      <p>Who are you practising empathy with?</p>
+      <div class="audience-grid">
+        <div class="aud-card sel" data-aud="partner" onclick="pickAud(this)"><div class="act">Partner</div><div class="acd">Romantic relationship</div></div>
+        <div class="aud-card" data-aud="friend" onclick="pickAud(this)"><div class="act">Friend</div><div class="acd">Close friendship</div></div>
+        <div class="aud-card" data-aud="family" onclick="pickAud(this)"><div class="act">Family</div><div class="acd">Parent, sibling, child</div></div>
+        <div class="aud-card" data-aud="colleague" onclick="pickAud(this)"><div class="act">Colleague</div><div class="acd">Work relationship</div></div>
+      </div>
       <div class="field"><label>Your name</label><input type="text" id="myname" placeholder="Your name" maxlength="20"/></div>
-      <div class="field"><label>Her name</label><input type="text" id="hername" placeholder="Her name" maxlength="20"/></div>
+      <div class="field"><label id="her-label">Their name</label><input type="text" id="hername" placeholder="Their name" maxlength="20"/></div>
     </div>
     <button class="btn" onclick="saveNames()">Get Started</button>
   </div>
@@ -278,6 +296,11 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
   <div id="ph-chat" class="phase">
     <div class="scene-banner"><strong>The scene</strong><span id="scene-txt"></span></div>
     <div class="badges" id="badges"></div>
+    <div class="trust-bar-wrap">
+      <div class="trust-bar-label">Openness</div>
+      <div class="trust-bar-track"><div class="trust-bar-fill" id="trust-fill" style="width:50%;background:#D97706;"></div></div>
+      <div class="trust-bar-state" id="trust-state" style="color:#D97706;">Guarded</div>
+    </div>
     <div class="chat-win" id="chatwin"></div>
     <div id="breath-div" class="breath-box" style="display:none"><strong>Pause</strong>Breathe in for 4... hold for 2... out for 6.<br>What is she feeling right now?</div>
     <div class="input-area" id="input-block">
@@ -319,8 +342,11 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tex
       <div class="qm-speaker" id="qm-speaker"></div>
       <div class="qm-quote" id="qm-quote"></div>
     </div>
-    <div class="qm-prompt">How do you respond?</div>
-    <div class="qm-options" id="qm-options"></div>
+    <div class="input-area" id="qm-input-block">
+      <label>Your response</label>
+      <textarea id="qm-txt" placeholder="Type what you would say..." rows="3"></textarea>
+      <button class="send-btn" id="qm-sendbtn" onclick="qmSend()">Send</button>
+    </div>
     <div id="qm-fb" style="display:none" class="qm-fb"></div>
     <div id="qm-next" style="display:none"><button class="btn" onclick="qmNext()">Next Scenario</button></div>
   </div>
@@ -351,12 +377,22 @@ var QQ=[{cat:"Workplace",emoji:"Work",speaker:"A close colleague says",quote:"I 
 {cat:"Family",emoji:"Family",speaker:"Your sibling says",quote:"Mum always treated you differently. I know you probably did not notice but I always felt like the difficult one.",opts:["That is not true, she treated us the same.","I am sorry you felt that way.","That sounds like something you have been carrying for a really long time. I had no idea. Tell me more about what that was like for you.","Maybe you were just more sensitive as a kid."],correct:2,good:"You took it seriously, acknowledged you might not have seen it, and created space to hear more. That is real empathy.",miss:"Dismissing or minimising a childhood wound, even gently, shuts down the conversation before it can open."},
 {cat:"Grief",emoji:"Grief",speaker:"A friend says",quote:"I keep starting to text her before I remember she is gone. It has been eight months and I still do it.",opts:["That will get easier with time, I promise.","Grief is different for everyone, there is no right timeline.","That reflex of reaching for her is love. Eight months is nothing. Grief does not follow a calendar.","Have you thought about grief counselling?"],correct:2,good:"You reframed the habit as love rather than a symptom, and removed the pressure of a timeline. That is deep empathy.",miss:"Reassurance and advice, even compassionate ones, can make someone feel rushed or pathologised in their grief."},
 {cat:"Confidence",emoji:"Confidence",speaker:"Your partner says",quote:"I look at other women and just feel so invisible. Like I have completely lost myself somewhere along the way.",opts:["You are beautiful, do not be so hard on yourself.","What do you think has changed?","That feeling of invisibility sounds really painful. Like somewhere along the way you stopped being able to see yourself clearly. When did that start?","You should start taking better care of yourself."],correct:2,good:"You sat with the feeling, reflected it back with care, and got curious without pressure. That is what empathy looks like.",miss:"Reassurance and advice, however kind, can feel like you are not really seeing the depth of what they shared."},
-{cat:"Friendship",emoji:"Friendship",speaker:"A friend says",quote:"I think I am a bad person. I had a really dark thought about someone I love and it scared me.",opts:["Everyone has dark thoughts, it does not make you bad.","What was the thought?","The fact that it scared you says everything about who you are. Bad people do not worry about being bad.","You should talk to a therapist about that."],correct:2,good:"You reframed the fear itself as evidence of their goodness. That is compassionate, precise empathy.",miss:"Normalising or seeking details misses the shame they are sitting in. They needed absolution, not analysis."}];
+{cat:"Friendship",emoji:"Friendship",speaker:"A friend says",quote:"I think I am a bad person. I had a really dark thought about someone I love and it scared me.",opts:["Everyone has dark thoughts, it does not make you bad.","What was the thought?","The fact that it scared you says everything about who you are. Bad people do not worry about being bad.","You should talk to a therapist about that."],correct:2,good:"You reframed the fear itself as evidence of their goodness. That is compassionate, precise empathy.",miss:"Normalising or seeking details misses the shame they are sitting in. They needed absolution, not analysis."},{cat:"Identity",speaker:"A friend says",quote:"I feel like everyone around me has figured out their life and I am just pretending. Like I am one conversation away from being exposed as someone who has no idea what they are doing.",opts:["Everyone feels like that. It is called impostor syndrome.","That feeling of performing competence while quietly panicking inside. That is exhausting to carry. What does it feel like day to day?","You are too hard on yourself.","Have you talked to a therapist about this?"],correct:1,good:"You named the performance and the exhaustion of it precisely. That kind of recognition is rare and deeply felt.",miss:"Labelling it or offering reassurance can make someone feel their private fear has been tidied away rather than truly heard."}];
 var myName="You",herName="Her",sel="neglected",diff=1,mode="practice";
 var count=0,scores=[],myReplies=[],herReplies=[],busy=false,lastSel="neglected",lastDiff=1,lastMode="practice";
+var trustLevel=50;
 var qmIdx=0,qmCorrect=0,qmAnswered=false;
-function loadNames(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);myName=n.me||"You";herName=n.her||"Her";return true;}return false;}
-function saveNames(){var me=document.getElementById("myname").value.trim()||"You";var her=document.getElementById("hername").value.trim()||"Her";myName=me;herName=her;localStorage.setItem("et_names",JSON.stringify({me:me,her:her}));showDashboard();}
+function loadNames(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);myName=n.me||"You";herName=n.her||"Her";audience=n.aud||"partner";return true;}return false;}
+var audience="partner";
+function pickAud(el){
+  document.querySelectorAll(".aud-card").forEach(function(c){c.classList.remove("sel");});
+  el.classList.add("sel");audience=el.dataset.aud;
+  var labels={partner:"Her name",friend:"Their name",family:"Their name",colleague:"Their name"};
+  var placeholders={partner:"Her name",friend:"Their name",family:"Their name",colleague:"Their name"};
+  document.getElementById("her-label").textContent=labels[audience]||"Their name";
+  document.getElementById("hername").placeholder=placeholders[audience]||"Their name";
+}
+function saveNames(){var me=document.getElementById("myname").value.trim()||"You";var her=document.getElementById("hername").value.trim()||"Her";myName=me;herName=her;localStorage.setItem("et_names",JSON.stringify({me:me,her:her,aud:audience}));showDashboard();}
 function showSetup(){var s=localStorage.getItem("et_names");if(s){var n=JSON.parse(s);document.getElementById("myname").value=n.me||"";document.getElementById("hername").value=n.her||"";}showPhase("ph-setup");}
 function showDashboard(){document.getElementById("dash-name").textContent=myName;loadHistory();showPhase("ph-dashboard");}
 function showModeSelect(){showPhase("ph-mode");}
@@ -403,40 +439,51 @@ function startQuick(){
   showPhase("ph-quick");renderQM();
 }
 function renderQM(){
-  var q=(window.qmPool||QQ)[qmIdx];
-  var pool=window.qmPool||QQ;document.getElementById("qm-fill").style.width=Math.min(Math.round((qmIdx/pool.length)*100)+10,100)+"%";
-  var pool=window.qmPool||QQ;document.getElementById("qm-num").textContent="Scenario "+(qmIdx+1)+" of "+pool.length;
+  var pool=window.qmPool||QQ;
+  var q=pool[qmIdx];
+  document.getElementById("qm-fill").style.width=Math.min(Math.round((qmIdx/pool.length)*100)+10,100)+"%";
+  document.getElementById("qm-num").textContent="Scenario "+(qmIdx+1)+" of "+pool.length;
   document.getElementById("qm-cat").textContent=q.cat;
   document.getElementById("qm-speaker").textContent=q.speaker+":";
   document.getElementById("qm-quote").textContent='"'+q.quote+'"';
-  var opts=document.getElementById("qm-options");
-  opts.innerHTML="";
-  q.opts.forEach(function(o,i){
-    var b=document.createElement("button");
-    b.className="qm-option";b.textContent=o;
-    b.onclick=function(){qmAnswer(i,q);};
-    opts.appendChild(b);
-  });
   document.getElementById("qm-fb").style.display="none";
   document.getElementById("qm-next").style.display="none";
+  document.getElementById("qm-txt").value="";
+  document.getElementById("qm-sendbtn").disabled=false;
+  document.getElementById("qm-sendbtn").textContent="Send";
+  document.getElementById("qm-input-block").style.display="block";
   qmAnswered=false;
 }
-function qmAnswer(i,q){
-  if(qmAnswered)return;qmAnswered=true;
-  var opts=document.querySelectorAll(".qm-option");
-  var ok=i===q.correct;
-  opts[i].classList.add(ok?"sel-good":"sel-miss");
-  if(!ok)opts[q.correct].classList.add("reveal");
-  opts.forEach(function(o,j){if(j!==i&&j!==q.correct)o.classList.add("faded");});
-  if(ok)qmCorrect++;
-  var fb=document.getElementById("qm-fb");
-  fb.className="qm-fb";
-  var qlabel=ok?"Empathetic":"Not quite";
-  var barW=ok?82:22;
-  fb.innerHTML='<div class="qm-fb-header"><div class="qm-fb-title">Your Empathy Analysis</div><div class="qm-fb-badge '+(ok?"good":"miss")+'">'+qlabel+'</div></div><div class="qm-fb-bar-wrap"><div class="qm-fb-bar"><div class="qm-fb-bar-fill '+(ok?"good":"miss")+'" style="width:'+barW+'%"></div></div></div><div class="qm-fb-text">'+(ok?q.good:q.miss)+"</div>";
-  fb.style.display="block";
-  var pool=window.qmPool||QQ;if(qmIdx<pool.length-1){document.getElementById("qm-next").style.display="block";}
-  else{setTimeout(qmFinish,1500);}
+async function qmSend(){
+  if(qmAnswered)return;
+  var txt=document.getElementById("qm-txt").value.trim();
+  if(!txt)return;
+  qmAnswered=true;
+  document.getElementById("qm-sendbtn").disabled=true;
+  document.getElementById("qm-sendbtn").textContent="Analysing...";
+  var pool=window.qmPool||QQ;
+  var q=pool[qmIdx];
+  var sys='You are an empathy coach evaluating a single response in a training exercise.\nSituation: '+q.speaker+' says: "'+q.quote+'"\nUser response: "'+txt+'"\n\nCRITICAL: Reply ONLY as a raw JSON object. No markdown. Start with { end with }:\n{"quality":"good or neutral or miss","feedback":"2 sentences: what worked or what to try instead, be specific and warm","score":0}';
+  try{
+    var res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:sys,messages:[{role:"user",content:txt}]})});
+    var data=await res.json();
+    var p;try{p=JSON.parse(data.text.replace(/```[\w]*/g,"").replace(/```/g,"").trim());}catch(e){p={quality:"neutral",feedback:"Keep practising — the instinct to respond with care is the foundation.",score:50};}
+    var q2=p.quality||"neutral";
+    if(q2==="good")qmCorrect++;
+    var qlabel=q2==="good"?"Empathetic":q2==="neutral"?"Getting there":"Try again";
+    var barW=q2==="good"?Math.max(70,p.score||80):q2==="neutral"?Math.max(35,Math.min(60,p.score||45)):Math.min(35,p.score||20);
+    var fb=document.getElementById("qm-fb");
+    fb.className="qm-fb";
+    fb.innerHTML='<div class="qm-fb-header"><div class="qm-fb-title">Your Empathy Analysis</div><div class="qm-fb-badge '+q2+'">'+qlabel+'</div></div><div class="qm-fb-bar-wrap"><div class="qm-fb-bar"><div class="qm-fb-bar-fill '+q2+'" style="width:'+barW+'%"></div></div></div><div class="qm-fb-text">'+(p.feedback||"Keep going.")+"</div>";
+    fb.style.display="block";
+    document.getElementById("qm-input-block").style.display="none";
+    if(qmIdx<pool.length-1){document.getElementById("qm-next").style.display="block";}
+    else{setTimeout(qmFinish,1800);}
+  }catch(err){
+    document.getElementById("qm-sendbtn").disabled=false;
+    document.getElementById("qm-sendbtn").textContent="Send";
+    qmAnswered=false;
+  }
 }
 function qmNext(){qmIdx++;renderQM();}
 function qmFinish(){
@@ -459,7 +506,7 @@ function begin(){
   document.getElementById("breath-div").style.display="none";
   document.getElementById("input-block").style.display="block";
   document.getElementById("sendbtn").disabled=false;
-  count=0;scores=[];myReplies=[];herReplies=[];
+  count=0;scores=[];myReplies=[];herReplies=[];trustLevel=diff===1?65:diff===2?45:diff===3?30:20;updateTrust(trustLevel);
   var ml=mode==="practice"?'<div class="badge mode-p">Practice</div>':'<div class="badge mode-i">Immersion</div>';
   var dlMap={1:'<div class="badge d1">Gentle</div>',2:'<div class="badge d2">Guarded</div>',3:'<div class="badge d3">Defended</div>',4:'<div class="badge d4">Breaking point</div>'};
   document.getElementById("badges").innerHTML=ml+dlMap[diff];
@@ -489,7 +536,7 @@ async function doSend(){
   document.getElementById("fb-div").innerHTML="";document.getElementById("act-div").innerHTML="";
   addMsg("you",txt);myReplies.push(txt);ta.value="";count++;showTyping();
   var s=SC[sel];var d=DIFF[diff];
-  var sys=mode==="practice"?"You are running an empathy training simulation. TWO roles:\n\nROLE 1 - "+herName+", a woman in an emotionally charged moment.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond as "+herName+" - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After "+herName+"s response give brief honest feedback addressing "+myName+" directly.\n\nCRITICAL: Your entire response must be a single raw JSON object. No markdown. No code fences. No backticks. No extra text before or after. Start your response with { and end with }. Use exactly these keys:\n{\"her\":\"her response here\",\"quality\":\"good or neutral or miss\",\"score\":50,\"feedback\":\"1-2 sentences of coaching\",\"breath\":false}":"You are "+herName+" in an empathy training simulation.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond ONLY as "+herName+" - authentically, briefly (1-3 sentences). Plain text only.";
+  var sys=mode==="practice"?"You are running an empathy training simulation. TWO roles:\n\nROLE 1 - "+herName+", a person in an emotionally charged moment. Relationship to "+myName+": "+audience+".\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond as "+herName+" - authentically, briefly (1-3 sentences), emotionally real.\n\nROLE 2 - Empathy coach. After "+herName+"s response give brief honest feedback addressing "+myName+" directly.\n\nCRITICAL: Your entire response must be a single raw JSON object. No markdown. No code fences. No backticks. No extra text before or after. Start your response with { and end with }. Use exactly these keys:\n{\"her\":\"her response here\",\"quality\":\"good or neutral or miss\",\"score\":50,\"feedback\":\"1-2 sentences of coaching\",\"breath\":false}":"You are "+herName+" in an empathy training simulation.\nScene: "+s.scene+"\nDifficulty: "+d.label+". "+d.inst+"\nRespond ONLY as "+herName+" - authentically, briefly (1-3 sentences). Plain text only.";
   var msgs=[];
   for(var i=0;i<herReplies.length;i++){msgs.push({role:"assistant",content:herReplies[i]});if(myReplies[i])msgs.push({role:"user",content:myReplies[i]});}
   var maxAttempts=3;var attempt=0;
@@ -510,6 +557,10 @@ async function doSend(){
           addMsg("her",p.her);
           if(p.breath)document.getElementById("breath-div").style.display="block";
           var q=p.quality||"neutral";
+          if(q==="good"){trustLevel=Math.min(95,trustLevel+15);}
+          else if(q==="neutral"){trustLevel=Math.max(5,trustLevel+3);}
+          else{trustLevel=Math.max(5,trustLevel-18);}
+          updateTrust(trustLevel);
           var qlabel=q==="good"?"That landed well":q==="neutral"?"Getting there":"Try again";
           var barW=q==="good"?Math.max(65,p.score||75):q==="neutral"?Math.max(35,Math.min(60,p.score||45)):Math.min(35,p.score||25);
           var tags=q==="good"?["Validation","Curiosity"]:q==="neutral"?["Emotion naming"]:["Try validation"];
@@ -543,6 +594,21 @@ async function doSend(){
   attemptSend();
 }
 function doNext(){document.getElementById("act-div").innerHTML="";document.getElementById("fb-div").innerHTML="";document.getElementById("txt").focus();}
+function updateTrust(level){
+  var fill=document.getElementById("trust-fill");
+  var state=document.getElementById("trust-state");
+  if(!fill)return;
+  var pct=Math.max(5,Math.min(95,level));
+  var color,label;
+  if(pct>=75){color="#16A34A";label="Opening up";}
+  else if(pct>=55){color="#7C3AED";label="Warming";}
+  else if(pct>=35){color="#D97706";label="Guarded";}
+  else{color="#E11D48";label="Withdrawing";}
+  fill.style.width=pct+"%";
+  fill.style.background=color;
+  state.textContent=label;
+  state.style.color=color;
+}
 function doRetry(){myReplies.pop();herReplies.pop();if(scores.length)scores.pop();count--;document.getElementById("act-div").innerHTML="";document.getElementById("fb-div").innerHTML="";document.getElementById("txt").value="";document.getElementById("txt").focus();}
 async function doDebrief(){
   var avg=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):null;
